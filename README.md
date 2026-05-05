@@ -90,4 +90,4 @@ LibraryManagementSystem/
 ## Notes
 
 - `Web.config` connection string must be updated to your local machine name
-- The `Migrations/` folder is managed by the team leader — do not add or edit migration files manually
+- The `Migrations/` folder is managed by the team leader - do not add or edit migration files manually
