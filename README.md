@@ -100,6 +100,7 @@ LibraryManagementSystem/
 Initial merge with main-branch is done. Admin branch now mirrors main branch
 
 1. Commit to github
+
 **If Admin team:**
 
 Run: git checkout Admin
