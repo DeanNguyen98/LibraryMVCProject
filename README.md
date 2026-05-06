@@ -104,7 +104,9 @@ Initial merge with main-branch is done. Admin branch now mirrors main branch
 **If Admin team:**
 
 Run: git checkout Admin
+
 For commit/push to github repo:
+
 Only run git push origin Admin. Do not push to main-branch
 
 **If User team:**
@@ -113,7 +115,9 @@ Run:git checkout User
 For commit/push to github repo: Only run git push origin User.
 
 2. Development
+
 Main development folders:
+
 Backend:
 - /Controller/Admin/ : where you write controllers for each views. For URL prefix we can avoid using the default MVC routing by defining [RoutePrefix(url/example)]
 - /ViewModels/Admin/: Where you define the class you will be using to pass into the views and its attribute. Similar to a Model folder, but with more flexibility, allowing you to pass in data from multiple tables
