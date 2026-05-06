@@ -1,0 +1,26 @@
+@{
+    ViewBag.Title = "Admin Sign In";
+}
+
+<h2>Admin Sign In</h2>
+
+@if (TempData["AdminSignInError"] != null)
+{
+    <p class="text-danger">@TempData["AdminSignInError"]</p>
+}
+
+@using (Html.BeginForm("AdminSignIn", "Auth", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div>
+        <label>Email</label>
+        <input type="email" name="Email" class="form-control" />
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" name="Password" class="form-control" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Sign In</button>
+    <a href="/Auth/SignIn" class="btn btn-link">Back to Member Sign In</a>
+}
