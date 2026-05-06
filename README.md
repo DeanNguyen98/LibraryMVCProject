@@ -97,19 +97,21 @@ LibraryManagementSystem/
 ## Development Guide
 
 
-- Initial merge with main-branch is done. Admin branch now mirrors main branch
+Initial merge with main-branch is done. Admin branch now mirrors main branch
 
-
+1. Commit to github
 **If Admin team:**
 
 Run: git checkout Admin
 For commit/push to github repo:
 Only run git push origin Admin. Do not push to main-branch
 
-**If User team: **
+**If User team:**
+
 Run:git checkout User
 For commit/push to github repo: Only run git push origin User.
 
+2. Development
 Main development folders:
 Backend:
 - /Controller/Admin/ : where you write controllers for each views. For URL prefix we can avoid using the default MVC routing by defining [RoutePrefix(url/example)]
