@@ -1,0 +1,99 @@
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/UserHome.css" />
+
+<div class="user-home">
+
+    <div class="welcome-banner">
+        <h2>Welcome, Member</h2>
+        <p>Manage your books and borrowing activities</p>
+    </div>
+
+    <h3 class="section-heading">Group Members</h3>
+    <table class="members-table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Full Name</th>
+                <th>Student ID</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Md Akash Hasan</td>
+                <td>20031669</td>
+                <td>Frontend User Pages</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Member Two</td>
+                <td>2003XXXX</td>
+                <td>Frontend Admin Pages</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Member Three</td>
+                <td>2003XXXX</td>
+                <td>Backend</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Member Four</td>
+                <td>2003XXXX</td>
+                <td>Database</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="stats-row">
+        <div class="info-card card-blue">
+            <p class="card-label">Currently Borrowed</p>
+            <h3 class="card-number">3</h3>
+            <p class="card-note">Books checked out</p>
+        </div>
+        <div class="info-card card-green">
+            <p class="card-label">Available Books</p>
+            <h3 class="card-number">87</h3>
+            <p class="card-note">Ready to borrow</p>
+        </div>
+        <div class="info-card card-red">
+            <p class="card-label">Overdue Books</p>
+            <h3 class="card-number">1</h3>
+            <p class="card-note">Requires attention</p>
+        </div>
+    </div>
+
+    <div class="section-top">
+        <h3>Trending Books</h3>
+        <a href="/User/Books">View All</a>
+    </div>
+
+    <div class="book-row">
+        <div class="book-box">
+            <p class="book-name">Atomic Habits</p>
+            <p class="book-writer">James Clear</p>
+            <span class="tag tag-green">Available</span>
+        </div>
+        <div class="book-box">
+            <p class="book-name">Harry Potter I</p>
+            <p class="book-writer">J.K. Rowling</p>
+            <span class="tag tag-yellow">Borrowed</span>
+        </div>
+        <div class="book-box">
+            <p class="book-name">Fault in Our Stars</p>
+            <p class="book-writer">John Green</p>
+            <span class="tag tag-green">Available</span>
+        </div>
+    </div>
+
+    <div class="warning-box">
+        <strong>Overdue Notice:</strong>
+        Web Design was due 8 May 2026. Fine: $0.70
+    </div>
+
+</div>

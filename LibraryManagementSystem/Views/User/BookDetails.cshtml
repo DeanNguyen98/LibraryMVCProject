@@ -1,0 +1,91 @@
+@{
+    ViewBag.Title = "Book Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/UserBookDetails.css" />
+
+<div class="details-page">
+
+    <div class="page-header">
+        <h2>Book Details</h2>
+        <p>Full information about this book</p>
+    </div>
+
+    <div class="detail-layout">
+
+        <div class="cover-side">
+            <div class="book-cover">
+                <p>Book Cover</p>
+            </div>
+            <p class="genre-label">Self Help</p>
+        </div>
+
+        <div class="info-side">
+            <h2 class="book-title">Atomic Habits</h2>
+
+            <p class="meta-line">
+                <span class="meta-key">Author:</span> James Clear
+            </p>
+            <p class="meta-line">
+                <span class="meta-key">ISBN:</span> 978-0-7352-1129-2
+            </p>
+            <p class="meta-line">
+                <span class="meta-key">Genre:</span> Self Help
+            </p>
+            <p class="meta-line">
+                <span class="meta-key">Status:</span>
+                <span class="tag tag-green">Available</span>
+            </p>
+
+            <p class="book-description">
+                This book provides a practical framework for building
+                good habits and breaking bad ones. The author explains
+                how small changes in daily behaviour can lead to
+                significant results over time. It covers topics such
+                as habit loops, identity based habits, and environment
+                design. This is one of the most recommended books for
+                personal development and productivity improvement.
+            </p>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary">Borrow</button>
+                <button class="btn btn-secondary">Reserve</button>
+            </div>
+
+            <div class="reviews-section">
+                <h4 class="reviews-title">Member Reviews</h4>
+
+                <div class="review-item">
+                    <p class="reviewer-name">John D.</p>
+                    <p class="review-stars">Rating: 5 out of 5</p>
+                    <p class="review-comment">
+                        Very useful book. Changed the way I approach
+                        my daily routine. Highly recommend to anyone
+                        looking to improve their habits.
+                    </p>
+                </div>
+
+                <div class="review-item">
+                    <p class="reviewer-name">Maria S.</p>
+                    <p class="review-stars">Rating: 4 out of 5</p>
+                    <p class="review-comment">
+                        Good practical advice. Easy to read and apply
+                        in real life situations.
+                    </p>
+                </div>
+
+                <div class="review-item">
+                    <p class="reviewer-name">David L.</p>
+                    <p class="review-stars">Rating: 5 out of 5</p>
+                    <p class="review-comment">
+                        One of the best books I have read this year.
+                        The concepts are simple but very effective.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
