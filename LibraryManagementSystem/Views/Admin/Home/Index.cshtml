@@ -4,4 +4,78 @@
     ViewBag.Title = "Admin Home";
 }
 
-<h2>@Model.WelcomeMessage</h2>
+<div class="admin-dashboard">
+    <h1>Welcome, Admin</h1>
+    <p class="subtitle">Manage your library system efficiently.</p>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Books</h3>
+            <p class="stat-number">120</p>
+            <span>All books in library</span>
+        </div>
+
+        <div class="stat-card">
+            <h3>Borrowed Books</h3>
+            <p class="stat-number">35</p>
+            <span>Currently borrowed</span>
+        </div>
+
+        <div class="stat-card">
+            <h3>Overdue Books</h3>
+            <p class="stat-number">8</p>
+            <span>Need attention</span>
+        </div>
+
+        <div class="stat-card">
+            <h3>Active Members</h3>
+            <p class="stat-number">56</p>
+            <span>Registered members</span>
+        </div>
+    </div>
+
+    <h2>Quick Actions</h2>
+
+    <div class="action-grid">
+        <a href="#" class="action-card">Add Book</a>
+        <a href="#" class="action-card">Manage Books</a>
+        <a href="#" class="action-card">View Transactions</a>
+    </div>
+
+    <div class="recent-card">
+        <h2>Recent Activity</h2>
+
+        <table class="activity-table">
+            <thead>
+                <tr>
+                    <th>Activity</th>
+                    <th>User</th>
+                    <th>Details</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Book Borrowed</td>
+                    <td>John Doe</td>
+                    <td>Borrowed C# Basics</td>
+                    <td>2 minutes ago</td>
+                </tr>
+
+                <tr>
+                    <td>Book Returned</td>
+                    <td>Maria Santos</td>
+                    <td>Returned Web Design Essentials</td>
+                    <td>1 hour ago</td>
+                </tr>
+
+                <tr>
+                    <td>Overdue Notice</td>
+                    <td>David Lee</td>
+                    <td>Java Programming is overdue</td>
+                    <td>3 hours ago</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
