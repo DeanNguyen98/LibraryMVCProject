@@ -213,6 +213,7 @@
     <Content Include="Views\Auth\SignUp.cshtml" />
     <Content Include="Views\Admin\Home\Index.cshtml" />
     <Content Include="Views\Admin\BorrowSettings\Index.cshtml" />
+    <Content Include="Views\Admin\Books\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
