@@ -15,6 +15,19 @@ namespace LibraryManagementSystem.Controllers
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
+        [Route("~/")]
+        [HttpGet]
+        public ActionResult Root()
+        {
+            if (!Request.IsAuthenticated)
+                return Redirect("/Auth/SignIn");
+
+            if (User.IsInRole("Admin"))
+                return Redirect("/Admin/Home");
+
+            return Redirect("/User/Home");
+        }
+
         [Route("SignIn")]
         [HttpGet]
         public ActionResult SignIn()
@@ -42,7 +55,7 @@ namespace LibraryManagementSystem.Controllers
             }
 
             SetAuthCookie(user);
-            return Redirect("/");
+            return Redirect("/User/Home");
         }
 
         [Route("SignUp")]
@@ -114,7 +127,7 @@ namespace LibraryManagementSystem.Controllers
             }
 
             SetAuthCookie(user);
-            return Redirect("/");
+            return Redirect("/Admin/Home");
         }
 
         [Route("SignOut")]

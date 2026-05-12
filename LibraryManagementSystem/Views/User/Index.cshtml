@@ -1,3 +1,4 @@
+@model LibraryManagementSystem.ViewModels.User.UserHomeViewModel
 @{
     ViewBag.Title = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,7 +9,7 @@
 <div class="user-home">
 
     <div class="welcome-banner">
-        <h2>Welcome, Member</h2>
+        <h2>Welcome, @Model.UserFullName</h2>
         <p>Manage your books and borrowing activities</p>
     </div>
 
@@ -53,17 +54,17 @@
     <div class="stats-row">
         <div class="info-card card-blue">
             <p class="card-label">Currently Borrowed</p>
-            <h3 class="card-number">3</h3>
+            <h3 class="card-number">@Model.CurrentlyBorrowedCount</h3>
             <p class="card-note">Books checked out</p>
         </div>
         <div class="info-card card-green">
             <p class="card-label">Available Books</p>
-            <h3 class="card-number">87</h3>
+            <h3 class="card-number">@Model.AvailableBooksCount</h3>
             <p class="card-note">Ready to borrow</p>
         </div>
         <div class="info-card card-red">
             <p class="card-label">Overdue Books</p>
-            <h3 class="card-number">1</h3>
+            <h3 class="card-number">@Model.OverdueBooksCount</h3>
             <p class="card-note">Requires attention</p>
         </div>
     </div>
@@ -74,26 +75,33 @@
     </div>
 
     <div class="book-row">
-        <div class="book-box">
-            <p class="book-name">Atomic Habits</p>
-            <p class="book-writer">James Clear</p>
-            <span class="tag tag-green">Available</span>
-        </div>
-        <div class="book-box">
-            <p class="book-name">Harry Potter I</p>
-            <p class="book-writer">J.K. Rowling</p>
-            <span class="tag tag-yellow">Borrowed</span>
-        </div>
-        <div class="book-box">
-            <p class="book-name">Fault in Our Stars</p>
-            <p class="book-writer">John Green</p>
-            <span class="tag tag-green">Available</span>
-        </div>
+        @foreach (var book in Model.TrendingBooks)
+        {
+            <div class="book-box">
+                <p class="book-name">@book.Title</p>
+                <p class="book-writer">@book.Authors</p>
+                @if (book.IsAvailable)
+                {
+                    <span class="tag tag-green">Available</span>
+                }
+                else
+                {
+                    <span class="tag tag-yellow">Borrowed</span>
+                }
+            </div>
+        }
     </div>
 
-    <div class="warning-box">
-        <strong>Overdue Notice:</strong>
-        Web Design was due 8 May 2026. Fine: $0.70
-    </div>
+    @if (Model.OverdueNotices.Count > 0)
+    {
+        foreach (var notice in Model.OverdueNotices)
+        {
+            <div class="warning-box">
+                <strong>Overdue Notice:</strong>
+                @notice.BookTitle was due @notice.DueDate.ToString("d MMM yyyy"). Fine:
+                $@notice.FineAmount.ToString("0.00")
+            </div>
+        }
+    }
 
 </div>
