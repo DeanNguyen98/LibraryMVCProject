@@ -242,3 +242,30 @@
 .delete-btn:hover {
     background: #dc2626;
 }
+
+/* Transaction Status */
+
+.status-borrowed {
+    background: #3b82f6;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.status-returned {
+    background: #22c55e;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.status-overdue {
+    background: #ef4444;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+} 
+

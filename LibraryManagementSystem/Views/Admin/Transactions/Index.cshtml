@@ -1,0 +1,171 @@
+﻿@{
+    ViewBag.Title = "Manage Transactions";
+}
+
+<div class="page-content">
+
+    <div class="settings-container">
+
+        <div class="page-header">
+            <h1>Manage Transactions</h1>
+
+            <p class="subtitle">
+                View and manage borrowing and returning records.
+            </p>
+        </div>
+
+        <div class="top-actions">
+
+            <input type="text"
+                   placeholder="Search transactions..."
+                   class="search-box" />
+
+            <button class="add-btn">
+                Add Transaction
+            </button>
+
+        </div>
+
+        <table class="activity-table">
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Member Name</th>
+                    <th>Book Title</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>C# Programming</td>
+                    <td>10 May 2026</td>
+                    <td>24 May 2026</td>
+
+                    <td>
+                        <span class="status-borrowed">
+                            Borrowed
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="edit-btn">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>Maria Santos</td>
+                    <td>Web Design Basics</td>
+                    <td>5 May 2026</td>
+                    <td>19 May 2026</td>
+
+                    <td>
+                        <span class="status-returned">
+                            Returned
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="edit-btn">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td>David Lee</td>
+                    <td>Java Programming Guide</td>
+                    <td>1 May 2026</td>
+                    <td>10 May 2026</td>
+
+                    <td>
+                        <span class="status-overdue">
+                            Overdue
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="edit-btn">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>4</td>
+                    <td>Sarah Johnson</td>
+                    <td>Database Systems</td>
+                    <td>12 May 2026</td>
+                    <td>26 May 2026</td>
+
+                    <td>
+                        <span class="status-borrowed">
+                            Borrowed
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="edit-btn">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>5</td>
+                    <td>Chris Miller</td>
+                    <td>UI/UX Fundamentals</td>
+                    <td>8 May 2026</td>
+                    <td>22 May 2026</td>
+
+                    <td>
+                        <span class="status-returned">
+                            Returned
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="edit-btn">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
