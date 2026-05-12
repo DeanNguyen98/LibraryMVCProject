@@ -1,1 +1,96 @@
-﻿
+﻿@{
+    ViewBag.Title = "Borrow Settings";
+}
+
+<div class="page-content">
+
+    <div class="settings-container">
+
+        <div class="page-header">
+            <h1>Manage Borrow Settings</h1>
+
+            <p class="subtitle">
+                Create and manage borrowing rules for the library.
+            </p>
+        </div>
+
+        <div class="top-actions">
+
+            <input type="text"
+                   placeholder="Search settings..."
+                   class="search-box" />
+
+            <button class="add-btn">
+                Add New Setting
+            </button>
+
+        </div>
+
+        <table class="activity-table">
+
+            <thead>
+                <tr>
+                    <th>Setting Name</th>
+                    <th>Borrow Duration</th>
+                    <th>Penalty</th>
+                    <th>Max Books</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>Standard Borrow Rule</td>
+                    <td>14 days</td>
+                    <td>$0.10</td>
+                    <td>3 books</td>
+
+                    <td>
+                        <span class="status-active">
+                            Available
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="edit-btn">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Premium Member Rule</td>
+                    <td>30 days</td>
+                    <td>$0.05</td>
+                    <td>5 books</td>
+
+                    <td>
+                        <span class="status-active">
+                            Available
+                        </span>
+                    </td>
+
+                    <td>
+                        <button class="edit-btn">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
