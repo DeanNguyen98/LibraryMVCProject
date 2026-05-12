@@ -57,3 +57,78 @@
 .page-content {
     padding: 30px;
 }
+
+/* Dashboard Cards */
+
+.stats-grid,
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.action-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.stat-card,
+.action-card,
+.recent-card {
+    background: white;
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: bold;
+    color: #F97316;
+    margin: 10px 0;
+}
+
+.action-card {
+    display: block;
+    text-decoration: none;
+    color: #222;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Table */
+
+.activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+    .activity-table th,
+    .activity-table td {
+        padding: 14px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .activity-table th {
+        color: #555;
+    }
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .stats-grid,
+    .action-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+    }
+}
