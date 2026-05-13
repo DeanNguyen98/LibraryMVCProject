@@ -29,13 +29,10 @@ namespace LibraryManagementSystem.Models
 
         public int BorrowedTimes { get; set; } = 0;
 
-        public int BorrowSettingsId { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
         public virtual Library Library { get; set; }
-        public virtual BorrowSettings BorrowSettings { get; set; }
         public virtual ICollection<BookAuthor> BookAuthors { get; set; }
         public virtual ICollection<BookGenre> BookGenres { get; set; }
         public virtual ICollection<BorrowTransaction> BorrowTransactions { get; set; }
