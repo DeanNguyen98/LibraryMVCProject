@@ -1,3 +1,4 @@
+@model LibraryManagementSystem.ViewModels.User.UserBooksViewModel
 @{
     ViewBag.Title = "Books";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,22 +13,22 @@
         <p>Search and borrow from our collection</p>
     </div>
 
-    <div class="search-area">
+    @using (Html.BeginForm("Books", "User", FormMethod.Get, new { @class = "search-area" }))
+    {
         <input type="text"
+               name="search"
+               value="@Model.SearchQuery"
                placeholder="Search by title or author"
                class="search-input" />
-        <select class="filter-select">
+        <select name="genre" class="filter-select" onchange="this.form.submit()">
             <option value="">All Genres</option>
-            <option value="selfhelp">Self Help</option>
-            <option value="fantasy">Fantasy</option>
-            <option value="romance">Romance</option>
-            <option value="finance">Finance</option>
-            <option value="technology">Technology</option>
-            <option value="science">Science</option>
-            <option value="history">History</option>
-            <option value="mystery">Mystery</option>
+            @foreach (var g in Model.Genres)
+            {
+                <option value="@g" @(g == Model.SelectedGenre ? "selected" : "")>@g</option>
+            }
         </select>
-    </div>
+        <button type="submit" style="display:none"></button>
+    }
 
     <table class="books-table">
         <thead>
@@ -40,111 +41,48 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td><a href="/User/BookDetails" class="book-link">Atomic Habits</a></td>
-                <td>James Clear</td>
-                <td>Self Help</td>
-                <td><span class="tag tag-green">Available</span></td>
-                <td><button class="btn btn-primary">Borrow</button></td>
-            </tr>
-            <tr>
-                <td>Harry Potter and the Philosophers Stone</td>
-                <td>J.K. Rowling</td>
-                <td>Fantasy</td>
-                <td><span class="tag tag-yellow">Borrowed</span></td>
-                <td><button class="btn btn-secondary">Reserve</button></td>
-            </tr>
-            <tr>
-                <td>The Fault in Our Stars</td>
-                <td>John Green</td>
-                <td>Romance</td>
-                <td><span class="tag tag-green">Available</span></td>
-                <td><button class="btn btn-primary">Borrow</button></td>
-            </tr>
-            <tr>
-                <td>The Hunger Games</td>
-                <td>Suzanne Collins</td>
-                <td>Dystopian</td>
-                <td><span class="tag tag-green">Available</span></td>
-                <td><button class="btn btn-primary">Borrow</button></td>
-            </tr>
-            <tr>
-                <td>Rich Dad Poor Dad</td>
-                <td>Robert Kiyosaki</td>
-                <td>Finance</td>
-                <td><span class="tag tag-blue">Reserved</span></td>
-                <td><button class="btn btn-disabled" disabled>Unavailable</button></td>
-            </tr>
-            <tr>
-                <td>Web Design with HTML and CSS</td>
-                <td>David Lee</td>
-                <td>Technology</td>
-                <td><span class="tag tag-red">Overdue</span></td>
-                <td><button class="btn btn-secondary">Reserve</button></td>
-            </tr>
-            <tr>
-                <td>To Kill a Mockingbird</td>
-                <td>Harper Lee</td>
-                <td>Classic</td>
-                <td><span class="tag tag-green">Available</span></td>
-                <td><button class="btn btn-primary">Borrow</button></td>
-            </tr>
-            <tr>
-                <td>The Great Gatsby</td>
-                <td>F. Scott Fitzgerald</td>
-                <td>Classic</td>
-                <td><span class="tag tag-green">Available</span></td>
-                <td><button class="btn btn-primary">Borrow</button></td>
-            </tr>
-            <tr>
-                <td>Thinking Fast and Slow</td>
-                <td>Daniel Kahneman</td>
-                <td>Psychology</td>
-                <td><span class="tag tag-yellow">Borrowed</span></td>
-                <td><button class="btn btn-secondary">Reserve</button></td>
-            </tr>
-            <tr>
-                <td>The Alchemist</td>
-                <td>Paulo Coelho</td>
-                <td>Fiction</td>
-                <td><span class="tag tag-green">Available</span></td>
-                <td><button class="btn btn-primary">Borrow</button></td>
-            </tr>
-            <tr>
-                <td>Sapiens</td>
-                <td>Yuval Noah Harari</td>
-                <td>History</td>
-                <td><span class="tag tag-green">Available</span></td>
-                <td><button class="btn btn-primary">Borrow</button></td>
-            </tr>
-            <tr>
-                <td>The Power of Now</td>
-                <td>Eckhart Tolle</td>
-                <td>Self Help</td>
-                <td><span class="tag tag-blue">Reserved</span></td>
-                <td><button class="btn btn-disabled" disabled>Unavailable</button></td>
-            </tr>
-            <tr>
-                <td>Introduction to Programming</td>
-                <td>Walter Savitch</td>
-                <td>Technology</td>
-                <td><span class="tag tag-green">Available</span></td>
-                <td><button class="btn btn-primary">Borrow</button></td>
-            </tr>
-            <tr>
-                <td>The Da Vinci Code</td>
-                <td>Dan Brown</td>
-                <td>Mystery</td>
-                <td><span class="tag tag-yellow">Borrowed</span></td>
-                <td><button class="btn btn-secondary">Reserve</button></td>
-            </tr>
-            <tr>
-                <td>A Brief History of Time</td>
-                <td>Stephen Hawking</td>
-                <td>Science</td>
-                <td><span class="tag tag-green">Available</span></td>
-                <td><button class="btn btn-primary">Borrow</button></td>
-            </tr>
+            @foreach (var book in Model.Books)
+            {
+                <tr>
+                    <td>
+                        <a href="/User/BookDetails?id=@book.Id" class="book-link">@book.Title</a>
+                    </td>
+                    <td>@book.Authors</td>
+                    <td>@book.Genre</td>
+                    <td>
+                        @switch (book.Status)
+                        {
+                            case "Available":
+                                <span class="tag tag-green">Available</span>
+                                break;
+                            case "Borrowed":
+                                <span class="tag tag-yellow">Borrowed</span>
+                                break;
+                            case "Reserved":
+                                <span class="tag tag-blue">Reserved</span>
+                                break;
+                            case "Overdue":
+                                <span class="tag tag-red">Overdue</span>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        @switch (book.Status)
+                        {
+                            case "Available":
+                                <button class="btn btn-primary">Borrow</button>
+                                break;
+                            case "Borrowed":
+                            case "Overdue":
+                                <button class="btn btn-secondary">Reserve</button>
+                                break;
+                            case "Reserved":
+                                <button class="btn btn-disabled" disabled>Unavailable</button>
+                                break;
+                        }
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 

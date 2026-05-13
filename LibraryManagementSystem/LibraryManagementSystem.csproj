@@ -155,6 +155,7 @@
     <Compile Include="ViewModels\Auth\AdminSignInViewModel.cs" />
     <Compile Include="ViewModels\Auth\MemberSignInViewModel.cs" />
     <Compile Include="ViewModels\Auth\MemberSignUpViewModel.cs" />
+    <Compile Include="ViewModels\User\UserBookViewModel.cs" />
     <Compile Include="ViewModels\User\UserHomeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

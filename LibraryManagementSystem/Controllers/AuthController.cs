@@ -37,6 +37,7 @@ namespace LibraryManagementSystem.Controllers
 
         [Route("SignIn")]
         [HttpPost]
+        // token generation for security.
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SignIn(MemberSignInViewModel model)
         {
@@ -145,7 +146,7 @@ namespace LibraryManagementSystem.Controllers
                 version: 1,
                 name: user.Email,
                 issueDate: DateTime.Now,
-                expiration: DateTime.Now.AddMinutes(43200),
+                expiration: DateTime.Now.AddMinutes(60),
                 isPersistent: false,
                 userData: user.Role.ToString()
             );
