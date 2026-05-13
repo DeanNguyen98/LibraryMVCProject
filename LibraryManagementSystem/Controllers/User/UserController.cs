@@ -48,7 +48,23 @@ namespace LibraryManagementSystem.Controllers.UserArea
                 });
             }
 
-            // Same thing with trending books
+            var newArrivalsList = await db.Books
+                .Include(b => b.BookAuthors.Select(ba => ba.Author))
+                .OrderByDescending(b => b.CreatedAt)
+                .Take(4)
+                .ToListAsync();
+
+            var newArrivals = new List<UserHomeViewModel.NewArrivalItem>();
+            foreach (var b in newArrivalsList)
+            {
+                newArrivals.Add(new UserHomeViewModel.NewArrivalItem
+                {
+                    Title = b.Title,
+                    Authors = string.Join(", ", b.BookAuthors.Select(ba => ba.Author.Name)),
+                    IsAvailable = b.AvailableCopies > 0
+                });
+            }
+
             var overdueNotices = await db.BorrowTransactions
               .Where(t => t.UserId == user.Id && t.Status == BorrowStatus.Overdue)
               .Select(t => new UserHomeViewModel.OverdueNoticeItem
@@ -67,6 +83,7 @@ namespace LibraryManagementSystem.Controllers.UserArea
                 AvailableBooksCount = availableCount,
                 OverdueBooksCount = overdueCount,
                 TrendingBooks = trending,
+                NewArrivals = newArrivals,
                 OverdueNotices = overdueNotices
             };
 
@@ -76,11 +93,22 @@ namespace LibraryManagementSystem.Controllers.UserArea
         [Route("Books")]
         public async Task<ActionResult> Books(string search = null, string genre = null)
         {
+            var email = User.Identity.Name;
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var userActiveBookIds = await db.BorrowTransactions
+                .Where(t => t.UserId == user.Id && (t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed))
+                .Select(t => t.BookId)
+                .ToListAsync();
+
+            var userOverdueBookIds = await db.BorrowTransactions
+                .Where(t => t.UserId == user.Id && t.Status == BorrowStatus.Overdue)
+                .Select(t => t.BookId)
+                .ToListAsync();
+
             var query = db.Books
                 .Include(b => b.BookAuthors.Select(ba => ba.Author))
                 .Include(b => b.BookGenres.Select(bg => bg.Genre))
-                .Include(b => b.BorrowTransactions)
-                .Include(b => b.Reservations)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -98,12 +126,12 @@ namespace LibraryManagementSystem.Controllers.UserArea
                 string status;
                 if (b.AvailableCopies > 0)
                     status = "Available";
-                else if (b.BorrowTransactions.Any(t => t.Status == BorrowStatus.Overdue))
+                else if (userOverdueBookIds.Contains(b.Id))
                     status = "Overdue";
-                else if (b.Reservations.Any(r => r.Status == ReservationStatus.Pending))
-                    status = "Reserved";
-                else
+                else if (userActiveBookIds.Contains(b.Id))
                     status = "Borrowed";
+                else
+                    status = "Unavailable";
 
                 books.Add(new UserBooksViewModel.BookListItem
                 {

@@ -92,6 +92,29 @@
         }
     </div>
 
+    <div class="section-top">
+        <h3>New Arrivals</h3>
+        <a href="/User/Books">View All</a>
+    </div>
+
+    <div class="book-row">
+        @foreach (var book in Model.NewArrivals)
+        {
+            <div class="book-box">
+                <p class="book-name">@book.Title</p>
+                <p class="book-writer">@book.Authors</p>
+                @if (book.IsAvailable)
+                {
+                    <span class="tag tag-green">Available</span>
+                }
+                else
+                {
+                    <span class="tag tag-yellow">Borrowed</span>
+                }
+            </div>
+        }
+    </div>
+
     @if (Model.OverdueNotices.Count > 0)
     {
         foreach (var notice in Model.OverdueNotices)

@@ -81,7 +81,7 @@
     font-weight: 600;
 }
 
-.btn {
+.book-btn {
     padding: 5px 12px;
     border-radius: 5px;
     font-size: 11px;
@@ -90,18 +90,18 @@
     border: none;
 }
 
-.btn-primary {
+.book-btn-primary {
     background-color: #e07b39;
     color: #ffffff;
 }
 
-.btn-secondary {
+.book-btn-secondary {
     background-color: #ffffff;
     border: 1px solid #e07b39;
     color: #e07b39;
 }
 
-.btn-disabled {
+.book-btn-disabled {
     background-color: #eeeeee;
     color: #999999;
     cursor: not-allowed;
@@ -133,4 +133,9 @@
 .tag-blue {
     background-color: #d0e4f7;
     color: #1a4f8a;
+}
+
+.tag-grey {
+    background-color: #e2e2e2;
+    color: #666666;
 }

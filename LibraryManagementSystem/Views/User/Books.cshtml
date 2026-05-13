@@ -56,10 +56,10 @@
                                 <span class="tag tag-green">Available</span>
                                 break;
                             case "Borrowed":
-                                <span class="tag tag-yellow">Borrowed</span>
+                                <span class="tag tag-yellow">Borrowed by You</span>
                                 break;
-                            case "Reserved":
-                                <span class="tag tag-blue">Reserved</span>
+                            case "Unavailable":
+                                <span class="tag tag-grey">Unavailable</span>
                                 break;
                             case "Overdue":
                                 <span class="tag tag-red">Overdue</span>
@@ -70,14 +70,16 @@
                         @switch (book.Status)
                         {
                             case "Available":
-                                <button class="btn btn-primary">Borrow</button>
+                                <button class="book-btn book-btn-primary">Borrow</button>
                                 break;
                             case "Borrowed":
-                            case "Overdue":
-                                <button class="btn btn-secondary">Reserve</button>
+                                <button class="book-btn book-btn-disabled" disabled>Borrowed</button>
                                 break;
-                            case "Reserved":
-                                <button class="btn btn-disabled" disabled>Unavailable</button>
+                            case "Unavailable":
+                                <button class="book-btn book-btn-secondary">Reserve</button>
+                                break;
+                            case "Overdue":
+                                <button class="book-btn book-btn-disabled" disabled>Overdue</button>
                                 break;
                         }
                     </td>

@@ -12,9 +12,17 @@ namespace LibraryManagementSystem.ViewModels.User
         public int AvailableBooksCount { get; set; }
         public int OverdueBooksCount { get; set; }
         public List<TrendingBookItem> TrendingBooks { get; set; }
+        public List<NewArrivalItem> NewArrivals { get; set; }
         public List<OverdueNoticeItem> OverdueNotices { get; set; }
 
         public class TrendingBookItem
+        {
+            public string Title { get; set; }
+            public string Authors { get; set; }
+            public bool IsAvailable { get; set; }
+        }
+
+        public class NewArrivalItem
         {
             public string Title { get; set; }
             public string Authors { get; set; }
