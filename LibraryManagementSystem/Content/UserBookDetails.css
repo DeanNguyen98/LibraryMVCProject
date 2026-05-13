@@ -84,7 +84,7 @@
     margin-bottom: 18px;
 }
 
-.btn {
+.book-btn {
     padding: 8px 16px;
     border-radius: 5px;
     font-size: 12px;
@@ -93,12 +93,12 @@
     border: none;
 }
 
-.btn-primary {
+.book-btn-primary {
     background-color: #6a4fcb;
     color: #ffffff;
 }
 
-.btn-secondary {
+.book-btn-secondary {
     background-color: #ffffff;
     border: 1px solid #6a4fcb;
     color: #6a4fcb;
@@ -171,4 +171,15 @@
 .tag-blue {
     background-color: #d0e4f7;
     color: #1a4f8a;
+}
+
+.tag-grey {
+    background-color: #e2e2e2;
+    color: #666666;
+}
+
+.book-btn-disabled {
+    background-color: #eeeeee;
+    color: #999999;
+    cursor: not-allowed;
 }
