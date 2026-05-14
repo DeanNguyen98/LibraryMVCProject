@@ -1,3 +1,5 @@
+@model LibraryManagementSystem.ViewModels.User.UserTransactionsViewModel
+
 @{
     ViewBag.Title = "Transactions";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -39,48 +41,42 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Atomic Habits</td>
-                    <td>01 May 2026</td>
-                    <td>15 May 2026</td>
-                    <td>Sydney Library</td>
-                    <td>
-                        <button class="btn btn-outline">
-                            Extend
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>The Hunger Games</td>
-                    <td>05 May 2026</td>
-                    <td>19 May 2026</td>
-                    <td>Sydney Library</td>
-                    <td>
-                        <button class="btn btn-outline">
-                            Extend
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Rich Dad Poor Dad</td>
-                    <td>28 Apr 2026</td>
-                    <td>12 May 2026</td>
-                    <td>Sydney Library</td>
-                    <td>
-                        <button class="btn btn-outline">
-                            Extend
-                        </button>
-                    </td>
-                </tr>
+                @foreach (var item in Model.ActiveBorrows)
+                {
+                    <tr>
+                        <td>@item.BookTitle</td>
+                        <td>@item.BorrowedAt.ToString("dd MMM yyyy")</td>
+                        <td>@item.DueDate.ToString("dd MMM yyyy")</td>
+                        <td>@item.ReturnLocation</td>
+                        <td class="action-cell">
+                            @using (Html.BeginForm("ExtendBorrow", "User",
+                                FormMethod.Post, new { style = "display:inline;" }))
+                            {
+                                @Html.Hidden("transactionId", item.TransactionId)
+                                <button type="submit" class="btn btn-outline">
+                                    Extend
+                                </button>
+                            }
+                            <button class="btn btn-feedback"
+                                    onclick="openFeedback('@item.BookTitle',
+                                        @item.BookId)">
+                                Leave Feedback
+                            </button>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 
     <div id="tab-overdue" class="tab-panel" style="display:none;">
-        <div class="notice-box">
-            You have 1 overdue book. Please return it
-            or pay the fine as soon as possible.
-        </div>
+        @if (Model.OverdueItems.Count > 0)
+        {
+            <div class="notice-box">
+                You have @Model.OverdueItems.Count overdue book(s). Please
+                return or pay the fine as soon as possible.
+            </div>
+        }
         <table class="data-table">
             <thead>
                 <tr>
@@ -92,17 +88,27 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Web Design with HTML and CSS</td>
-                    <td>08 May 2026</td>
-                    <td class="overdue-days">7</td>
-                    <td class="fine-amount">$0.70</td>
-                    <td>
-                        <button class="btn btn-danger">
-                            Pay Fine
-                        </button>
-                    </td>
-                </tr>
+                @foreach (var item in Model.OverdueItems)
+                {
+                    <tr>
+                        <td>@item.BookTitle</td>
+                        <td>@item.DueDate.ToString("dd MMM yyyy")</td>
+                        <td class="overdue-days">@item.DaysOverdue</td>
+                        <td class="fine-amount">
+                            $@item.FineAmount.ToString("0.00")
+                        </td>
+                        <td>
+                            @using (Html.BeginForm("PayFine", "User",
+                                FormMethod.Post, new { style = "display:inline;" }))
+                            {
+                                @Html.Hidden("transactionId", item.TransactionId)
+                                <button type="submit" class="btn btn-danger">
+                                    Pay Fine
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -115,75 +121,56 @@
                     <th>Return Status</th>
                     <th>Return Date</th>
                     <th>Fine Paid</th>
+                    <th>Feedback</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>C# Programming Basics</td>
-                    <td>
-                        <span class="tag tag-green">On Time</span>
-                    </td>
-                    <td>04 May 2026</td>
-                    <td>$0.00</td>
-                    <td>
-                        <button class="btn btn-success">
-                            Leave Feedback
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Introduction to Java</td>
-                    <td>
-                        <span class="tag tag-red">Late</span>
-                    </td>
-                    <td>04 May 2026</td>
-                    <td>$2.00</td>
-                    <td>
-                        <button class="btn btn-success">
-                            Leave Feedback
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Harry Potter and the Philosophers Stone</td>
-                    <td>
-                        <span class="tag tag-green">On Time</span>
-                    </td>
-                    <td>01 Apr 2026</td>
-                    <td>$0.00</td>
-                    <td>
-                        <button class="btn btn-success">
-                            Leave Feedback
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Sapiens</td>
-                    <td>
-                        <span class="tag tag-green">On Time</span>
-                    </td>
-                    <td>15 Mar 2026</td>
-                    <td>$0.00</td>
-                    <td>
-                        <button class="btn btn-success">
-                            Leave Feedback
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>The Alchemist</td>
-                    <td>
-                        <span class="tag tag-red">Late</span>
-                    </td>
-                    <td>10 Mar 2026</td>
-                    <td>$1.50</td>
-                    <td>
-                        <button class="btn btn-success">
-                            Leave Feedback
-                        </button>
-                    </td>
-                </tr>
+                @foreach (var item in Model.HistoryItems)
+                {
+                    <tr>
+                        <td>@item.BookTitle</td>
+                        <td>
+                            @if (item.ReturnedOnTime)
+                            {
+                                <span class="tag tag-green">On Time</span>
+                            }
+                            else
+                            {
+                                <span class="tag tag-red">Late</span>
+                            }
+                        </td>
+                        <td>@item.ReturnedAt.ToString("dd MMM yyyy")</td>
+                        <td>$@item.FinePaid.ToString("0.00")</td>
+                        <td>
+                            @if (item.HasFeedback)
+                            {
+                                <span class="feedback-given">
+                                    Rating: @item.FeedbackRating
+                                    - @item.FeedbackComment
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="no-feedback">No feedback yet</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.HasFeedback)
+                            {
+                                <span class="submitted-label">Submitted</span>
+                            }
+                            else
+                            {
+                                <button class="btn btn-success"
+                                        onclick="openFeedback('@item.BookTitle',
+                                            @item.BookId)">
+                                    Leave Feedback
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -191,18 +178,89 @@
 </div>
 
 <script>
+    var currentBookId = null;
+
+    var modal = document.createElement('div');
+    modal.id = 'feedback-modal';
+    modal.innerHTML = '\
+        <div id="modal-overlay"></div>\
+        <div id="modal-box">\
+            <h4 id="modal-title-text">Leave Feedback</h4>\
+            <p id="modal-book-name"></p>\
+            <form id="feedback-form" method="post" action="/User/SubmitFeedback">\
+                <div class="form-group">\
+                    <label class="form-label">Rating</label>\
+                    <div class="star-row">\
+                        <label><input type="radio" name="rating" value="1" /> 1</label>\
+                        <label><input type="radio" name="rating" value="2" /> 2</label>\
+                        <label><input type="radio" name="rating" value="3" /> 3</label>\
+                        <label><input type="radio" name="rating" value="4" /> 4</label>\
+                        <label><input type="radio" name="rating" value="5" checked /> 5</label>\
+                    </div>\
+                </div>\
+                <div class="form-group">\
+                    <label class="form-label">Comment</label>\
+                    <textarea id="feedback-comment" name="comment"\
+                        class="form-textarea"\
+                        placeholder="Write your review here..."></textarea>\
+                </div>\
+                <input type="hidden" name="bookId" id="feedback-book-id" />\
+                <div class="modal-buttons">\
+                    <button type="submit" class="btn btn-success">Submit</button>\
+                    <button type="button" class="btn btn-outline"\
+                            onclick="closeFeedback()">Cancel</button>\
+                </div>\
+            </form>\
+        </div>';
+
+    modal.style.cssText =
+        'display:none; position:fixed; top:0; left:0;' +
+        'width:100%; height:100%; z-index:99999;' +
+        'background-color:rgba(0,0,0,0.6);';
+
+    var box = modal.querySelector('#modal-box');
+    box.style.cssText =
+        'position:fixed; top:50%; left:50%;' +
+        'transform:translate(-50%,-50%);' +
+        'background:#ffffff; padding:24px;' +
+        'border-radius:8px; width:400px;' +
+        'z-index:100000; border:1px solid #dddddd;' +
+        'font-family:Arial,sans-serif;';
+
+    var titleText = modal.querySelector('#modal-title-text');
+    titleText.style.cssText =
+        'font-size:14px; color:#222222; margin:0 0 4px 0;';
+
+    var bookName = modal.querySelector('#modal-book-name');
+    bookName.style.cssText =
+        'font-size:12px; color:#2a8f7e; font-weight:bold; margin:0 0 16px 0;';
+
+    document.body.appendChild(modal);
+
     function showTab(tabName, clickedButton) {
         var panels = document.querySelectorAll('.tab-panel');
         for (var i = 0; i < panels.length; i++) {
             panels[i].style.display = 'none';
         }
-
         var buttons = document.querySelectorAll('.tab-btn');
         for (var j = 0; j < buttons.length; j++) {
             buttons[j].classList.remove('active');
         }
-
         document.getElementById('tab-' + tabName).style.display = 'block';
         clickedButton.classList.add('active');
+    }
+
+    function openFeedback(bookTitle, bookId) {
+        modal.querySelector('#modal-book-name').innerText = bookTitle;
+        modal.querySelector('#feedback-book-id').value = bookId;
+        modal.querySelector('#feedback-comment').value = '';
+        modal.querySelector('input[name="rating"][value="5"]').checked = true;
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeFeedback() {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
     }
 </script>

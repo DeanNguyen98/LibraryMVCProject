@@ -1,6 +1,7 @@
 using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.ViewModels.User;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -19,25 +20,23 @@ namespace LibraryManagementSystem.Controllers.UserArea
         public async Task<ActionResult> Index()
         {
             var email = User.Identity.Name;
-            var user = await db.Users.FirstOrDefaultAsync(u =>  u.Email == email);
-            
-            var borrowedCount = await db.BorrowTransactions.CountAsync( t => t.UserId == user.Id
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var borrowedCount = await db.BorrowTransactions.CountAsync(t => t.UserId == user.Id
                 && (t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed)
             );
             var availableCount = await db.Books.CountAsync(b => b.AvailableCopies > 0);
 
-            var overdueCount = await db.BorrowTransactions.CountAsync(t => t.UserId == user.Id && t.Status == BorrowStatus.Overdue);
+            var overdueCount = await db.BorrowTransactions.CountAsync(t => t.UserId == user.Id
+                && t.Status == BorrowStatus.Overdue);
 
-            //Get 3 top books based on borrowed times
             var trendingList = await db.Books
                 .Include(b => b.BookAuthors.Select(ba => ba.Author))
                 .OrderByDescending(b => b.BorrowedTimes)
                 .Take(3)
                 .ToListAsync();
 
-            // Create an object to store data for each book. Need to check if toList() is good or need to be ToListAsync()?
             var trending = new List<UserHomeViewModel.TrendingBookItem>();
-
             foreach (var b in trendingList)
             {
                 trending.Add(new UserHomeViewModel.TrendingBookItem
@@ -66,16 +65,15 @@ namespace LibraryManagementSystem.Controllers.UserArea
             }
 
             var overdueNotices = await db.BorrowTransactions
-              .Where(t => t.UserId == user.Id && t.Status == BorrowStatus.Overdue)
-              .Select(t => new UserHomeViewModel.OverdueNoticeItem
-              {
-                  BookTitle = t.Book.Title,
-                  DueDate = t.DueDate,
-                  FineAmount = t.FineAmount
-              })
-              .ToListAsync();
+                .Where(t => t.UserId == user.Id && t.Status == BorrowStatus.Overdue)
+                .Select(t => new UserHomeViewModel.OverdueNoticeItem
+                {
+                    BookTitle = t.Book.Title,
+                    DueDate = t.DueDate,
+                    FineAmount = t.FineAmount
+                })
+                .ToListAsync();
 
-            //compile ViewModel class
             var model = new UserHomeViewModel
             {
                 UserFullName = user.FullName,
@@ -97,7 +95,9 @@ namespace LibraryManagementSystem.Controllers.UserArea
             var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             var userActiveBookIds = await db.BorrowTransactions
-                .Where(t => t.UserId == user.Id && (t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed))
+                .Where(t => t.UserId == user.Id
+                    && (t.Status == BorrowStatus.Borrowed
+                        || t.Status == BorrowStatus.Renewed))
                 .Select(t => t.BookId)
                 .ToListAsync();
 
@@ -163,9 +163,177 @@ namespace LibraryManagementSystem.Controllers.UserArea
         }
 
         [Route("Transactions")]
-        public ActionResult Transactions()
+        public async Task<ActionResult> Transactions()
         {
-            return View("~/Views/User/Transactions.cshtml");
+            var email = User.Identity.Name;
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var activeBorrows = await db.BorrowTransactions
+                .Where(t => t.UserId == user.Id
+                    && (t.Status == BorrowStatus.Borrowed
+                        || t.Status == BorrowStatus.Renewed))
+                .Include(t => t.Book)
+                .Include(t => t.Library)
+                .ToListAsync();
+
+            var overdueItems = await db.BorrowTransactions
+                .Where(t => t.UserId == user.Id
+                    && t.Status == BorrowStatus.Overdue)
+                .Include(t => t.Book)
+                .ToListAsync();
+
+            var historyItems = await db.BorrowTransactions
+                .Where(t => t.UserId == user.Id
+                    && t.Status == BorrowStatus.Returned)
+                .Include(t => t.Book)
+                .ToListAsync();
+
+            var userFeedbacks = await db.Feedbacks
+                .Where(f => f.UserId == user.Id)
+                .ToListAsync();
+
+            var active = new List<UserTransactionsViewModel.ActiveBorrowItem>();
+            foreach (var t in activeBorrows)
+            {
+                active.Add(new UserTransactionsViewModel.ActiveBorrowItem
+                {
+                    TransactionId = t.Id,
+                    BookTitle = t.Book.Title,
+                    BookId = t.BookId,
+                    BorrowedAt = t.BorrowedAt,
+                    DueDate = t.DueDate,
+                    ReturnLocation = t.Library != null ? t.Library.Name : "Sydney Library"
+                });
+            }
+
+            var overdue = new List<UserTransactionsViewModel.OverdueItem>();
+            foreach (var t in overdueItems)
+            {
+                overdue.Add(new UserTransactionsViewModel.OverdueItem
+                {
+                    TransactionId = t.Id,
+                    BookTitle = t.Book.Title,
+                    DueDate = t.DueDate,
+                    DaysOverdue = (int)(DateTime.Today - t.DueDate).TotalDays,
+                    FineAmount = t.FineAmount
+                });
+            }
+
+            var history = new List<UserTransactionsViewModel.HistoryItem>();
+            foreach (var t in historyItems)
+            {
+                var feedback = userFeedbacks
+                    .FirstOrDefault(f => f.BookId == t.BookId);
+
+                history.Add(new UserTransactionsViewModel.HistoryItem
+                {
+                    BookId = t.BookId,
+                    BookTitle = t.Book.Title,
+                    ReturnedOnTime = t.ReturnedAt.HasValue
+                        && t.ReturnedAt.Value <= t.DueDate,
+                    ReturnedAt = t.ReturnedAt ?? t.DueDate,
+                    FinePaid = t.FinePaid,
+                    HasFeedback = feedback != null,
+                    FeedbackRating = feedback != null ? feedback.Rating : 0,
+                    FeedbackComment = feedback != null ? feedback.Comment : ""
+                });
+            }
+
+            var model = new UserTransactionsViewModel
+            {
+                ActiveBorrows = active,
+                OverdueItems = overdue,
+                HistoryItems = history
+            };
+
+            return View("~/Views/User/Transactions.cshtml", model);
+        }
+
+        [Route("ExtendBorrow")]
+        [HttpPost]
+        public async Task<ActionResult> ExtendBorrow(int transactionId)
+        {
+            var email = User.Identity.Name;
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var transaction = await db.BorrowTransactions
+                .FirstOrDefaultAsync(t => t.Id == transactionId
+                    && t.UserId == user.Id
+                    && (t.Status == BorrowStatus.Borrowed
+                        || t.Status == BorrowStatus.Renewed));
+
+            if (transaction == null)
+            {
+                return HttpNotFound();
+            }
+
+            transaction.DueDate = transaction.DueDate.AddDays(7);
+            transaction.Status = BorrowStatus.Renewed;
+
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("Transactions");
+        }
+
+        [Route("PayFine")]
+        [HttpPost]
+        public async Task<ActionResult> PayFine(int transactionId)
+        {
+            var email = User.Identity.Name;
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var transaction = await db.BorrowTransactions
+                .FirstOrDefaultAsync(t => t.Id == transactionId
+                    && t.UserId == user.Id
+                    && t.Status == BorrowStatus.Overdue);
+
+            if (transaction == null)
+            {
+                return HttpNotFound();
+            }
+
+            transaction.FinePaid = transaction.FineAmount;
+            transaction.FineAmount = 0;
+            transaction.Status = BorrowStatus.Borrowed;
+
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("Transactions");
+        }
+
+        [Route("SubmitFeedback")]
+        [HttpPost]
+        public async Task<ActionResult> SubmitFeedback(int bookId, int rating, string comment)
+        {
+            var email = User.Identity.Name;
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var existing = await db.Feedbacks
+                .FirstOrDefaultAsync(f => f.UserId == user.Id
+                    && f.BookId == bookId);
+
+            if (existing != null)
+            {
+                existing.Rating = rating;
+                existing.Comment = comment;
+                existing.CreatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                var feedback = new Feedback
+                {
+                    UserId = user.Id,
+                    BookId = bookId,
+                    Rating = rating,
+                    Comment = comment,
+                    CreatedAt = DateTime.UtcNow
+                };
+                db.Feedbacks.Add(feedback);
+            }
+
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("Transactions");
         }
     }
 }
