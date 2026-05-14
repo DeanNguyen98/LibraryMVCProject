@@ -1,0 +1,173 @@
+@model LibraryManagementSystem.ViewModels.User.UserBookDetailsViewModel
+@{
+    ViewBag.Title = "Book Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/UserBookDetails.css" />
+
+<div class="details-page">
+
+    <div class="page-header">
+        <h2>Book Details</h2>
+        <p>Full information about this book</p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="detail-layout">
+
+        <div class="cover-side">
+            <div class="book-cover">
+                @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
+                {
+                    <img src="@Model.CoverImageUrl" alt="@Model.Title cover" />
+                }
+                else
+                {
+                    <p>No Cover</p>
+                }
+            </div>
+            <p class="genre-label">@Model.Genre</p>
+        </div>
+
+        <div class="info-side">
+            <h2 class="book-title">@Model.Title</h2>
+
+            <p class="meta-line">
+                <span class="meta-key">Author:</span> @Model.Authors
+            </p>
+            <p class="meta-line">
+                <span class="meta-key">ISBN:</span> @Model.Isbn
+            </p>
+            <p class="meta-line">
+                <span class="meta-key">Genre:</span> @Model.Genre
+            </p>
+            <p class="meta-line">
+                <span class="meta-key">Status:</span>
+                @switch (Model.Status)
+                {
+                    case "Available":
+                        <span class="tag tag-green">Available</span>
+                        break;
+                    case "Borrowed":
+                        <span class="tag tag-yellow">Borrowed by You</span>
+                        break;
+                    case "Unavailable":
+                        <span class="tag tag-grey">Unavailable</span>
+                        break;
+                    case "Overdue":
+                        <span class="tag tag-red">Overdue</span>
+                        break;
+                }
+            </p>
+
+            <p class="book-description">@Model.Summary</p>
+
+            <div class="action-buttons">
+                @switch (Model.Status)
+                {
+                    case "Available":
+                        if (Model.AtBorrowLimit)
+                        {
+                            <button class="book-btn book-btn-disabled" disabled title="You have reached your borrowing limit">Limit Reached</button>
+                        }
+                        else
+                        {
+                            <button class="book-btn book-btn-primary" data-bs-toggle="modal" data-bs-target="#borrowModal">Borrow</button>
+                        }
+                        break;
+                    case "Borrowed":
+                        <button class="book-btn book-btn-disabled" disabled>Borrowed</button>
+                        break;
+                    case "Unavailable":
+                        <button class="book-btn book-btn-secondary" data-bs-toggle="modal" data-bs-target="#reserveModal">Reserve</button>
+                        break;
+                    case "Overdue":
+                        <button class="book-btn book-btn-disabled" disabled>Overdue</button>
+                        break;
+                }
+            </div>
+
+            <div class="reviews-section">
+                <h4 class="reviews-title">Member Reviews</h4>
+
+                @if (Model.Reviews.Count == 0)
+                {
+                    <p>No reviews yet.</p>
+                }
+                else
+                {
+                    foreach (var review in Model.Reviews)
+                    {
+                        <div class="review-item">
+                            <p class="reviewer-name">@review.ReviewerName</p>
+                            <p class="review-stars">Rating: @review.Rating out of 5</p>
+                            <p class="review-comment">@review.Comment</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="borrowModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Borrow</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to borrow: <strong>@Model.Title</strong></p>
+                    <p>Duration: <strong>@Model.LoanDurationDays days</strong></p>
+                    <p>Due Date: <strong>@DateTime.UtcNow.AddDays(Model.LoanDurationDays).ToString("d MMM yyyy")</strong></p>
+                </div>
+                <div class="modal-footer">
+                    @using (Html.BeginForm("BorrowBook", "User", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="bookId" value="@Model.Id" />
+                        <input type="hidden" name="returnUrl" value="/User/BookDetails?id=@Model.Id" />
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="book-btn book-btn-primary">Confirm</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reserveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Reservation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to reserve: <strong>@Model.Title</strong></p>
+                    <p>Your reservation will expire in 7 days.</p>
+                </div>
+                <div class="modal-footer">
+                    @using (Html.BeginForm("ReserveBook", "User", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="bookId" value="@Model.Id" />
+                        <input type="hidden" name="returnUrl" value="/User/BookDetails?id=@Model.Id" />
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="book-btn book-btn-secondary">Confirm</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

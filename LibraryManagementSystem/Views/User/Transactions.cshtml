@@ -1,0 +1,208 @@
+@{
+    ViewBag.Title = "Transactions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/UserTransactions.css" />
+
+<div class="transactions-page">
+
+    <div class="page-header">
+        <h2>My Transactions</h2>
+        <p>View and manage your borrowed books</p>
+    </div>
+
+    <div class="tab-buttons">
+        <button class="tab-btn active"
+                onclick="showTab('active', this)">
+            Active Borrowed
+        </button>
+        <button class="tab-btn"
+                onclick="showTab('overdue', this)">
+            Overdue
+        </button>
+        <button class="tab-btn"
+                onclick="showTab('history', this)">
+            History
+        </button>
+    </div>
+
+    <div id="tab-active" class="tab-panel">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                    <th>Return Location</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Atomic Habits</td>
+                    <td>01 May 2026</td>
+                    <td>15 May 2026</td>
+                    <td>Sydney Library</td>
+                    <td>
+                        <button class="btn btn-outline">
+                            Extend
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>The Hunger Games</td>
+                    <td>05 May 2026</td>
+                    <td>19 May 2026</td>
+                    <td>Sydney Library</td>
+                    <td>
+                        <button class="btn btn-outline">
+                            Extend
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Rich Dad Poor Dad</td>
+                    <td>28 Apr 2026</td>
+                    <td>12 May 2026</td>
+                    <td>Sydney Library</td>
+                    <td>
+                        <button class="btn btn-outline">
+                            Extend
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="tab-overdue" class="tab-panel" style="display:none;">
+        <div class="notice-box">
+            You have 1 overdue book. Please return it
+            or pay the fine as soon as possible.
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Due Date</th>
+                    <th>Days Overdue</th>
+                    <th>Fine Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Web Design with HTML and CSS</td>
+                    <td>08 May 2026</td>
+                    <td class="overdue-days">7</td>
+                    <td class="fine-amount">$0.70</td>
+                    <td>
+                        <button class="btn btn-danger">
+                            Pay Fine
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="tab-history" class="tab-panel" style="display:none;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Return Status</th>
+                    <th>Return Date</th>
+                    <th>Fine Paid</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>C# Programming Basics</td>
+                    <td>
+                        <span class="tag tag-green">On Time</span>
+                    </td>
+                    <td>04 May 2026</td>
+                    <td>$0.00</td>
+                    <td>
+                        <button class="btn btn-success">
+                            Leave Feedback
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Introduction to Java</td>
+                    <td>
+                        <span class="tag tag-red">Late</span>
+                    </td>
+                    <td>04 May 2026</td>
+                    <td>$2.00</td>
+                    <td>
+                        <button class="btn btn-success">
+                            Leave Feedback
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Harry Potter and the Philosophers Stone</td>
+                    <td>
+                        <span class="tag tag-green">On Time</span>
+                    </td>
+                    <td>01 Apr 2026</td>
+                    <td>$0.00</td>
+                    <td>
+                        <button class="btn btn-success">
+                            Leave Feedback
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Sapiens</td>
+                    <td>
+                        <span class="tag tag-green">On Time</span>
+                    </td>
+                    <td>15 Mar 2026</td>
+                    <td>$0.00</td>
+                    <td>
+                        <button class="btn btn-success">
+                            Leave Feedback
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>The Alchemist</td>
+                    <td>
+                        <span class="tag tag-red">Late</span>
+                    </td>
+                    <td>10 Mar 2026</td>
+                    <td>$1.50</td>
+                    <td>
+                        <button class="btn btn-success">
+                            Leave Feedback
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    function showTab(tabName, clickedButton) {
+        var panels = document.querySelectorAll('.tab-panel');
+        for (var i = 0; i < panels.length; i++) {
+            panels[i].style.display = 'none';
+        }
+
+        var buttons = document.querySelectorAll('.tab-btn');
+        for (var j = 0; j < buttons.length; j++) {
+            buttons[j].classList.remove('active');
+        }
+
+        document.getElementById('tab-' + tabName).style.display = 'block';
+        clickedButton.classList.add('active');
+    }
+</script>

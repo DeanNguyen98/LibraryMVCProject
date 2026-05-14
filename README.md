@@ -91,3 +91,38 @@ LibraryManagementSystem/
 
 - `Web.config` connection string must be updated to your local machine name
 - The `Migrations/` folder is managed by the team leader - do not add or edit migration files manually
+
+---
+
+## Development Guide
+
+
+Initial merge with main-branch is done. Admin branch now mirrors main branch
+
+1. Commit to github
+
+**If Admin team:**
+
+Run: git checkout Admin
+
+For commit/push to github repo:
+
+Only run git push origin Admin. Do not push to main-branch
+
+**If User team:**
+
+Run:git checkout User
+For commit/push to github repo: Only run git push origin User.
+
+2. Development
+
+Main development folders:
+
+Backend:
+- /Controller/Admin/ : where you write controllers for each views. For URL prefix we can avoid using the default MVC routing by defining [RoutePrefix(url/example)]
+- /ViewModels/Admin/: Where you define the class you will be using to pass into the views and its attribute. Similar to a Model folder, but with more flexibility, allowing you to pass in data from multiple tables
+
+
+Frontend:
+- /Views/Admin: where you define the views for each pages. 
+- /Content: store the CSS files. Try to maintain consistency by naming the files as AdminHome.css or AdminBooks.css

@@ -11,9 +11,6 @@ namespace LibraryManagementSystem.Models
         public int Id { get; set; }
 
         [Required]
-        public int LibraryId { get; set; }
-
-        [Required]
         public string SettingName { get; set; }
 
         public int LoanDurationDays { get; set; } = 14;
