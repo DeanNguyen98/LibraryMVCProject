@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using LibraryManagementSystem.Data;
+using LibraryManagementSystem.Models;
+
+namespace LibraryManagementSystem.Controllers.Admin
+{
+    [Authorize(Roles = "Admin")]
+    [RoutePrefix("Admin/Transactions")]
+    public class AdminTransactionsController : Controller
+    {
+        private ApplicationDbContext db = new ApplicationDbContext();
+
+        [Route("")]
+        public ActionResult Index()
+        {
+            var transactions = db.BorrowTransactions
+                .Include("User")
+                .Include("Book")
+                .Include("Library")
+                .OrderByDescending(t => t.BorrowedAt)
+                .ToList();
+
+            return View("~/Views/Admin/Transactions/Index.cshtml", transactions);
+        }
+
+        [Route("ConfirmReturn/{id}")]
+        [HttpPost]
+        public ActionResult ConfirmReturn(int id)
+        {
+            var transaction = db.BorrowTransactions.Find(id);
+            if (transaction == null) return HttpNotFound();
+
+            transaction.Status = BorrowStatus.Returned;
+            transaction.ReturnedAt = DateTime.UtcNow;
+
+            if (DateTime.UtcNow > transaction.DueDate)
+            {
+                var daysOverdue = (DateTime.UtcNow - transaction.DueDate).Days;
+                var settings = db.BorrowSettings.FirstOrDefault();
+                if (settings != null)
+                {
+                    transaction.FineAmount = daysOverdue * settings.OverdueFinePerDay;
+                }
+            }
+
+            var book = db.Books.Find(transaction.BookId);
+            if (book != null) book.AvailableCopies += 1;
+
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+    }
+}
