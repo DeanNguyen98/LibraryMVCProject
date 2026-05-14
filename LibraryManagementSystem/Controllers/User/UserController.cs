@@ -124,12 +124,12 @@ namespace LibraryManagementSystem.Controllers.UserArea
             foreach (var b in booksRaw)
             {
                 string status;
-                if (b.AvailableCopies > 0)
-                    status = "Available";
-                else if (userOverdueBookIds.Contains(b.Id))
+                if (userOverdueBookIds.Contains(b.Id))
                     status = "Overdue";
                 else if (userActiveBookIds.Contains(b.Id))
                     status = "Borrowed";
+                else if (b.AvailableCopies > 0)
+                    status = "Available";
                 else
                     status = "Unavailable";
 
@@ -145,21 +145,178 @@ namespace LibraryManagementSystem.Controllers.UserArea
 
             var genres = await db.Genres.Select(g => g.Name).OrderBy(n => n).ToListAsync();
 
+            var settings = await db.BorrowSettings.FirstOrDefaultAsync(bs => bs.Status == "Active");
+            var activeCount = await db.BorrowTransactions.CountAsync(
+                t => t.UserId == user.Id &&
+                (t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed));
+
             var model = new UserBooksViewModel
             {
                 Books = books,
                 Genres = genres,
                 SearchQuery = search,
-                SelectedGenre = genre
+                SelectedGenre = genre,
+                AtBorrowLimit = settings != null && activeCount >= settings.MaxBorrowableItems,
+                LoanDurationDays = settings?.LoanDurationDays ?? 14
             };
 
             return View("~/Views/User/Books.cshtml", model);
         }
 
         [Route("BookDetails")]
-        public ActionResult BookDetails()
+        public async Task<ActionResult> BookDetails(int id)
         {
-            return View("~/Views/User/BookDetails.cshtml");
+            var email = User.Identity.Name;
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var book = await db.Books
+                .Include(b => b.BookAuthors.Select(ba => ba.Author))
+                .Include(b => b.BookGenres.Select(bg => bg.Genre))
+                .Include(b => b.Feedbacks.Select(f => f.User))
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (book == null)
+                return HttpNotFound();
+
+            var userHasActive = await db.BorrowTransactions.AnyAsync(
+                t => t.UserId == user.Id && t.BookId == id &&
+                (t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed));
+
+            var userHasOverdue = await db.BorrowTransactions.AnyAsync(
+                t => t.UserId == user.Id && t.BookId == id && t.Status == BorrowStatus.Overdue);
+
+            string status;
+            if (userHasOverdue)
+                status = "Overdue";
+            else if (userHasActive)
+                status = "Borrowed";
+            else if (book.AvailableCopies > 0)
+                status = "Available";
+            else
+                status = "Unavailable";
+
+            var settings = await db.BorrowSettings.FirstOrDefaultAsync(bs => bs.Status == "Active");
+            var activeCount = await db.BorrowTransactions.CountAsync(
+                t => t.UserId == user.Id &&
+                (t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed));
+
+            var model = new UserBookDetailsViewModel
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Authors = string.Join(", ", book.BookAuthors.Select(ba => ba.Author.Name)),
+                Isbn = book.Isbn,
+                Genre = string.Join(", ", book.BookGenres.Select(bg => bg.Genre.Name)),
+                Summary = book.Summary,
+                CoverImageUrl = book.CoverImageUrl,
+                Status = status,
+                AtBorrowLimit = settings != null && activeCount >= settings.MaxBorrowableItems,
+                LoanDurationDays = settings?.LoanDurationDays ?? 14,
+                Reviews = book.Feedbacks
+                    .OrderByDescending(f => f.CreatedAt)
+                    .Take(3)
+                    .Select(f => new UserBookDetailsViewModel.ReviewItem
+                    {
+                        ReviewerName = f.User.FullName,
+                        Rating = f.Rating,
+                        Comment = f.Comment
+                    })
+                    .ToList()
+            };
+
+            return View("~/Views/User/BookDetails.cshtml", model);
+        }
+
+        [Route("BorrowBook")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> BorrowBook(int bookId, string returnUrl)
+        {
+            var email = User.Identity.Name;
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var book = await db.Books.FirstOrDefaultAsync(b => b.Id == bookId);
+            if (book == null)
+            {
+                TempData["Error"] = "Book not found.";
+                return Redirect(returnUrl ?? "/User/Books");
+            }
+
+            if (book.AvailableCopies <= 0)
+            {
+                TempData["Error"] = "This book is no longer available.";
+                return Redirect(returnUrl ?? "/User/Books");
+            }
+
+            var settings = await db.BorrowSettings.FirstOrDefaultAsync(bs => bs.Status == "Active");
+            var activeCount = await db.BorrowTransactions.CountAsync(
+                t => t.UserId == user.Id &&
+                (t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed));
+
+            if (settings != null && activeCount >= settings.MaxBorrowableItems)
+            {
+                TempData["Error"] = $"You have reached your borrowing limit of {settings.MaxBorrowableItems} books.";
+                return Redirect(returnUrl ?? "/User/Books");
+            }
+
+            var loanDays = settings?.LoanDurationDays ?? 14;
+            var dueDate = System.DateTime.UtcNow.AddDays(loanDays);
+
+            db.BorrowTransactions.Add(new BorrowTransaction
+            {
+                UserId = user.Id,
+                BookId = bookId,
+                LibraryId = book.LibraryId,
+                Status = BorrowStatus.Borrowed,
+                BorrowedAt = System.DateTime.UtcNow,
+                DueDate = dueDate
+            });
+
+            book.AvailableCopies--;
+            book.BorrowedTimes++;
+
+            await db.SaveChangesAsync();
+
+            TempData["Success"] = $"You have borrowed \"{book.Title}\". Due date: {dueDate:d MMM yyyy}.";
+            return Redirect(returnUrl ?? "/User/Books");
+        }
+
+        [Route("ReserveBook")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ReserveBook(int bookId, string returnUrl)
+        {
+            var email = User.Identity.Name;
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var book = await db.Books.FirstOrDefaultAsync(b => b.Id == bookId);
+            if (book == null)
+            {
+                TempData["Error"] = "Book not found.";
+                return Redirect(returnUrl ?? "/User/Books");
+            }
+
+            var alreadyReserved = await db.Reservations.AnyAsync(
+                r => r.UserId == user.Id && r.BookId == bookId && r.Status == ReservationStatus.Pending);
+            if (alreadyReserved)
+            {
+                TempData["Error"] = "You already have a pending reservation for this book.";
+                return Redirect(returnUrl ?? "/User/Books");
+            }
+
+            db.Reservations.Add(new Reservation
+            {
+                UserId = user.Id,
+                BookId = bookId,
+                Status = ReservationStatus.Pending,
+                ReservedAt = System.DateTime.UtcNow,
+                ExpiresAt = System.DateTime.UtcNow.AddDays(7)
+            });
+
+            await db.SaveChangesAsync();
+
+            TempData["Success"] = $"You have reserved \"{book.Title}\". Your reservation expires in 7 days.";
+            return Redirect(returnUrl ?? "/User/Books");
         }
 
         [Route("Transactions")]

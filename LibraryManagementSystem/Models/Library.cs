@@ -26,7 +26,6 @@ namespace LibraryManagementSystem.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
-        public virtual BorrowSettings BorrowSettings { get; set; }
         public virtual ICollection<Book> Books { get; set; }
     }
 }

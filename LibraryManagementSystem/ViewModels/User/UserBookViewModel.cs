@@ -11,6 +11,8 @@ namespace LibraryManagementSystem.ViewModels.User
         public List<string> Genres { get; set; }
         public string SearchQuery { get; set; }
         public string SelectedGenre { get; set; }
+        public bool AtBorrowLimit { get; set; }
+        public int LoanDurationDays { get; set; }
 
         public class BookListItem
         {
