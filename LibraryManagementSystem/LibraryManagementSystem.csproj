@@ -138,6 +138,10 @@
     <Compile Include="Migrations\202605051345102_InitialCreate.Designer.cs">
       <DependentUpon>202605051345102_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202605140632004_AdminBranchChanges.cs" />
+    <Compile Include="Migrations\202605140632004_AdminBranchChanges.Designer.cs">
+      <DependentUpon>202605140632004_AdminBranchChanges.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Author.cs" />
     <Compile Include="Models\Book.cs" />
@@ -251,6 +255,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202605051345102_InitialCreate.resx">
       <DependentUpon>202605051345102_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202605140632004_AdminBranchChanges.resx">
+      <DependentUpon>202605140632004_AdminBranchChanges.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
