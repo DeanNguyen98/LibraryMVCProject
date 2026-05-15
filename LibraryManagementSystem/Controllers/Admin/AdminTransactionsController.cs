@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using LibraryManagementSystem.Data;
@@ -23,6 +22,14 @@ namespace LibraryManagementSystem.Controllers.Admin
                 .OrderByDescending(t => t.BorrowedAt)
                 .ToList();
 
+            var reservations = db.Reservations
+                .Include("User")
+                .Include("Book")
+                .OrderByDescending(r => r.ReservedAt)
+                .ToList();
+
+            ViewBag.Reservations = reservations;
+
             return View("~/Views/Admin/Transactions/Index.cshtml", transactions);
         }
 
@@ -41,14 +48,36 @@ namespace LibraryManagementSystem.Controllers.Admin
                 var daysOverdue = (DateTime.UtcNow - transaction.DueDate).Days;
                 var settings = db.BorrowSettings.FirstOrDefault();
                 if (settings != null)
-                {
                     transaction.FineAmount = daysOverdue * settings.OverdueFinePerDay;
-                }
             }
 
             var book = db.Books.Find(transaction.BookId);
             if (book != null) book.AvailableCopies += 1;
 
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [Route("MarkFinePaid/{id}")]
+        [HttpPost]
+        public ActionResult MarkFinePaid(int id)
+        {
+            var transaction = db.BorrowTransactions.Find(id);
+            if (transaction == null) return HttpNotFound();
+
+            transaction.FinePaid = transaction.FineAmount;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [Route("CancelReservation/{id}")]
+        [HttpPost]
+        public ActionResult CancelReservation(int id)
+        {
+            var reservation = db.Reservations.Find(id);
+            if (reservation == null) return HttpNotFound();
+
+            reservation.Status = ReservationStatus.Cancelled;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
