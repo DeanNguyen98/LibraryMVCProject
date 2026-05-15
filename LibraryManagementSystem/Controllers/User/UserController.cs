@@ -349,6 +349,10 @@ namespace LibraryManagementSystem.Controllers.UserArea
                 .Where(f => f.UserId == user.Id)
                 .ToListAsync();
 
+            var txSettings = await db.BorrowSettings.FirstOrDefaultAsync(bs => bs.Status == "Active");
+            var loanDays = txSettings?.LoanDurationDays ?? 14;
+            var renewalLimit = txSettings?.RenewalLimit ?? 3;
+
             var active = new List<UserTransactionsViewModel.ActiveBorrowItem>();
             foreach (var t in activeBorrows)
             {
@@ -359,9 +363,27 @@ namespace LibraryManagementSystem.Controllers.UserArea
                     BookId = t.BookId,
                     BorrowedAt = t.BorrowedAt,
                     DueDate = t.DueDate,
-                    ReturnLocation = t.Library != null ? t.Library.Name : "Sydney Library"
+                    ReturnLocation = t.Library != null ? t.Library.Name : "Sydney Library",
+                    LoanDurationDays = loanDays,
+                    NewDueDateAfterExtension = t.DueDate.AddDays(loanDays).ToString("dd MMM yyyy"),
+                    RenewalsRemaining = Math.Max(0, renewalLimit - t.RenewalsUsed)
                 });
             }
+
+            var finePerDay = txSettings?.OverdueFinePerDay ?? 0;
+            bool finesChanged = false;
+            foreach (var t in overdueItems)
+            {
+                var daysOverdue = (int)(DateTime.Today - t.DueDate.Date).TotalDays;
+                var outstandingFine = Math.Max(0, finePerDay * daysOverdue - t.FinePaid);
+                if (t.FineAmount != outstandingFine)
+                {
+                    t.FineAmount = outstandingFine;
+                    finesChanged = true;
+                }
+            }
+            if (finesChanged)
+                await db.SaveChangesAsync();
 
             var overdue = new List<UserTransactionsViewModel.OverdueItem>();
             foreach (var t in overdueItems)
@@ -371,7 +393,7 @@ namespace LibraryManagementSystem.Controllers.UserArea
                     TransactionId = t.Id,
                     BookTitle = t.Book.Title,
                     DueDate = t.DueDate,
-                    DaysOverdue = (int)(DateTime.Today - t.DueDate).TotalDays,
+                    DaysOverdue = (int)(DateTime.Today - t.DueDate.Date).TotalDays,
                     FineAmount = t.FineAmount
                 });
             }
@@ -408,6 +430,7 @@ namespace LibraryManagementSystem.Controllers.UserArea
 
         [Route("ExtendBorrow")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExtendBorrow(int transactionId)
         {
             var email = User.Identity.Name;
@@ -420,12 +443,21 @@ namespace LibraryManagementSystem.Controllers.UserArea
                         || t.Status == BorrowStatus.Renewed));
 
             if (transaction == null)
-            {
                 return HttpNotFound();
+
+            var settings = await db.BorrowSettings.FirstOrDefaultAsync(bs => bs.Status == "Active");
+            var renewalLimit = settings?.RenewalLimit ?? 3;
+            var loanDays = settings?.LoanDurationDays ?? 7;
+
+            if (transaction.RenewalsUsed >= renewalLimit)
+            {
+                TempData["Error"] = "You have reached the maximum number of renewals for this book.";
+                return RedirectToAction("Transactions");
             }
 
-            transaction.DueDate = transaction.DueDate.AddDays(7);
+            transaction.DueDate = transaction.DueDate.AddDays(loanDays);
             transaction.Status = BorrowStatus.Renewed;
+            transaction.RenewalsUsed++;
 
             await db.SaveChangesAsync();
 
@@ -434,6 +466,7 @@ namespace LibraryManagementSystem.Controllers.UserArea
 
         [Route("PayFine")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> PayFine(int transactionId)
         {
             var email = User.Identity.Name;
@@ -449,9 +482,8 @@ namespace LibraryManagementSystem.Controllers.UserArea
                 return HttpNotFound();
             }
 
-            transaction.FinePaid = transaction.FineAmount;
+            transaction.FinePaid += transaction.FineAmount;
             transaction.FineAmount = 0;
-            transaction.Status = BorrowStatus.Borrowed;
 
             await db.SaveChangesAsync();
 
@@ -460,6 +492,7 @@ namespace LibraryManagementSystem.Controllers.UserArea
 
         [Route("SubmitFeedback")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> SubmitFeedback(int bookId, int rating, string comment)
         {
             var email = User.Identity.Name;
@@ -473,7 +506,6 @@ namespace LibraryManagementSystem.Controllers.UserArea
             {
                 existing.Rating = rating;
                 existing.Comment = comment;
-                existing.CreatedAt = DateTime.UtcNow;
             }
             else
             {

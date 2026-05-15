@@ -17,6 +17,9 @@ namespace LibraryManagementSystem.ViewModels.User
             public DateTime BorrowedAt { get; set; }
             public DateTime DueDate { get; set; }
             public string ReturnLocation { get; set; }
+            public int LoanDurationDays { get; set; }
+            public string NewDueDateAfterExtension { get; set; }
+            public int RenewalsRemaining { get; set; }
         }
 
         public class OverdueItem

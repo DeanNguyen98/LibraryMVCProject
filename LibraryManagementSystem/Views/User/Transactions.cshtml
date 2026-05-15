@@ -49,11 +49,16 @@
                         <td>@item.DueDate.ToString("dd MMM yyyy")</td>
                         <td>@item.ReturnLocation</td>
                         <td class="action-cell">
-                            @using (Html.BeginForm("ExtendBorrow", "User",
-                                FormMethod.Post, new { style = "display:inline;" }))
+                            @if (item.RenewalsRemaining > 0)
                             {
-                                @Html.Hidden("transactionId", item.TransactionId)
-                                <button type="submit" class="btn btn-outline">
+                                <button type="button" class="btn btn-outline"
+                                        onclick="openExtendModal(@item.TransactionId, '@item.BookTitle', @item.LoanDurationDays, '@item.NewDueDateAfterExtension', @item.RenewalsRemaining)">
+                                    Extend
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-outline" disabled title="Renewal limit reached">
                                     Extend
                                 </button>
                             }
@@ -98,13 +103,19 @@
                             $@item.FineAmount.ToString("0.00")
                         </td>
                         <td>
-                            @using (Html.BeginForm("PayFine", "User",
-                                FormMethod.Post, new { style = "display:inline;" }))
+                            @if (item.FineAmount > 0)
                             {
-                                @Html.Hidden("transactionId", item.TransactionId)
-                                <button type="submit" class="btn btn-danger">
-                                    Pay Fine
-                                </button>
+                                using (Html.BeginForm("PayFine", "User",
+                                    FormMethod.Post, new { style = "display:inline;" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("transactionId", item.TransactionId)
+                                    <button type="submit" class="btn btn-danger">Pay Fine</button>
+                                }
+                            }
+                            else
+                            {
+                                <span class="tag tag-green">Fine Paid</span>
                             }
                         </td>
                     </tr>
@@ -177,7 +188,85 @@
 
 </div>
 
+<form id="extend-form" method="post" action="/User/ExtendBorrow" style="display:none;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="extend-transaction-id" name="transactionId" />
+</form>
+
+<span id="aft-holder" style="display:none;">@Html.AntiForgeryToken()</span>
+
 <script>
+    var extendModal = document.createElement('div');
+    extendModal.id = 'extend-modal';
+    extendModal.innerHTML = '\
+        <div id="extend-overlay"></div>\
+        <div id="extend-box">\
+            <h4 id="extend-title">Extend Borrow</h4>\
+            <p id="extend-book-name"></p>\
+            <table id="extend-detail-table">\
+                <tr>\
+                    <td>Extension Period</td>\
+                    <td><strong id="extend-loan-days"></strong></td>\
+                </tr>\
+                <tr>\
+                    <td>New Due Date</td>\
+                    <td><strong id="extend-new-due"></strong></td>\
+                </tr>\
+                <tr>\
+                    <td>Renewals Left After This</td>\
+                    <td><strong id="extend-renewals-left"></strong></td>\
+                </tr>\
+            </table>\
+            <div class="modal-buttons">\
+                <button type="button" class="btn btn-primary" onclick="confirmExtend()">Confirm Extension</button>\
+                <button type="button" class="btn btn-outline" onclick="closeExtendModal()">Cancel</button>\
+            </div>\
+        </div>';
+
+    extendModal.style.cssText =
+        'display:none; position:fixed; top:0; left:0;' +
+        'width:100%; height:100%; z-index:99999;' +
+        'background-color:rgba(0,0,0,0.6);';
+
+    var extendBox = extendModal.querySelector('#extend-box');
+    extendBox.style.cssText =
+        'position:fixed; top:50%; left:50%;' +
+        'transform:translate(-50%,-50%);' +
+        'background:#ffffff; padding:24px;' +
+        'border-radius:8px; width:400px;' +
+        'z-index:100000; border:1px solid #dddddd;' +
+        'font-family:Arial,sans-serif;';
+
+    extendModal.querySelector('#extend-title').style.cssText =
+        'font-size:14px; color:#222222; margin:0 0 4px 0;';
+
+    extendModal.querySelector('#extend-book-name').style.cssText =
+        'font-size:12px; color:#2a8f7e; font-weight:bold; margin:0 0 16px 0;';
+
+    extendModal.querySelector('#extend-detail-table').style.cssText =
+        'width:100%; border-collapse:collapse; margin-bottom:20px; font-size:13px;';
+
+    document.body.appendChild(extendModal);
+
+    function openExtendModal(transactionId, bookTitle, loanDays, newDueDate, renewalsRemaining) {
+        document.getElementById('extend-transaction-id').value = transactionId;
+        extendModal.querySelector('#extend-book-name').innerText = bookTitle;
+        extendModal.querySelector('#extend-loan-days').innerText = loanDays + ' days';
+        extendModal.querySelector('#extend-new-due').innerText = newDueDate;
+        extendModal.querySelector('#extend-renewals-left').innerText = (renewalsRemaining - 1);
+        extendModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeExtendModal() {
+        extendModal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function confirmExtend() {
+        document.getElementById('extend-form').submit();
+    }
+
     var currentBookId = null;
 
     var modal = document.createElement('div');
@@ -205,6 +294,7 @@
                         placeholder="Write your review here..."></textarea>\
                 </div>\
                 <input type="hidden" name="bookId" id="feedback-book-id" />\
+                <input type="hidden" name="__RequestVerificationToken" id="feedback-aft" />\
                 <div class="modal-buttons">\
                     <button type="submit" class="btn btn-success">Submit</button>\
                     <button type="button" class="btn btn-outline"\
@@ -253,6 +343,8 @@
     function openFeedback(bookTitle, bookId) {
         modal.querySelector('#modal-book-name').innerText = bookTitle;
         modal.querySelector('#feedback-book-id').value = bookId;
+        modal.querySelector('#feedback-aft').value =
+            document.querySelector('#aft-holder input[name="__RequestVerificationToken"]').value;
         modal.querySelector('#feedback-comment').value = '';
         modal.querySelector('input[name="rating"][value="5"]').checked = true;
         modal.style.display = 'block';
