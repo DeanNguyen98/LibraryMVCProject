@@ -7,13 +7,13 @@ namespace LibraryManagementSystem.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.5.2")]
-    public sealed partial class MergeMainBranchChanges : IMigrationMetadata
+    public sealed partial class InitialCreate : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(MergeMainBranchChanges));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
         
         string IMigrationMetadata.Id
         {
-            get { return "202605141547293_MergeMainBranchChanges"; }
+            get { return "202605150803313_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

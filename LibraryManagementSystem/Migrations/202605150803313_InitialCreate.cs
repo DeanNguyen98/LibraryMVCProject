@@ -43,15 +43,12 @@
                         TotalCopies = c.Int(nullable: false),
                         AvailableCopies = c.Int(nullable: false),
                         BorrowedTimes = c.Int(nullable: false),
-                        BorrowSettingsId = c.Int(nullable: false),
                         CreatedAt = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.BorrowSettings", t => t.BorrowSettingsId)
                 .ForeignKey("dbo.Libraries", t => t.LibraryId)
                 .Index(t => t.LibraryId)
-                .Index(t => t.Isbn, unique: true, name: "IX_Book_Isbn")
-                .Index(t => t.BorrowSettingsId);
+                .Index(t => t.Isbn, unique: true, name: "IX_Book_Isbn");
             
             CreateTable(
                 "dbo.BookGenres",
@@ -75,22 +72,6 @@
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true, name: "IX_Genre_Name");
-            
-            CreateTable(
-                "dbo.BorrowSettings",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        LibraryId = c.Int(nullable: false),
-                        SettingName = c.String(nullable: false),
-                        LoanDurationDays = c.Int(nullable: false),
-                        RenewalLimit = c.Int(nullable: false),
-                        OverdueFinePerDay = c.Decimal(nullable: false, precision: 10, scale: 2),
-                        MaxBorrowableItems = c.Int(nullable: false),
-                        Status = c.String(),
-                        UpdatedAt = c.DateTime(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.BorrowTransactions",
@@ -182,6 +163,21 @@
                 .Index(t => t.UserId)
                 .Index(t => t.BookId);
             
+            CreateTable(
+                "dbo.BorrowSettings",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        SettingName = c.String(nullable: false),
+                        LoanDurationDays = c.Int(nullable: false),
+                        RenewalLimit = c.Int(nullable: false),
+                        OverdueFinePerDay = c.Decimal(nullable: false, precision: 10, scale: 2),
+                        MaxBorrowableItems = c.Int(nullable: false),
+                        Status = c.String(),
+                        UpdatedAt = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
         }
         
         public override void Down()
@@ -194,7 +190,6 @@
             DropForeignKey("dbo.BorrowTransactions", "LibraryId", "dbo.Libraries");
             DropForeignKey("dbo.Books", "LibraryId", "dbo.Libraries");
             DropForeignKey("dbo.BorrowTransactions", "BookId", "dbo.Books");
-            DropForeignKey("dbo.Books", "BorrowSettingsId", "dbo.BorrowSettings");
             DropForeignKey("dbo.BookGenres", "GenreId", "dbo.Genres");
             DropForeignKey("dbo.BookGenres", "BookId", "dbo.Books");
             DropForeignKey("dbo.BookAuthors", "BookId", "dbo.Books");
@@ -210,17 +205,16 @@
             DropIndex("dbo.Genres", "IX_Genre_Name");
             DropIndex("dbo.BookGenres", new[] { "GenreId" });
             DropIndex("dbo.BookGenres", new[] { "BookId" });
-            DropIndex("dbo.Books", new[] { "BorrowSettingsId" });
             DropIndex("dbo.Books", "IX_Book_Isbn");
             DropIndex("dbo.Books", new[] { "LibraryId" });
             DropIndex("dbo.BookAuthors", new[] { "AuthorId" });
             DropIndex("dbo.BookAuthors", new[] { "BookId" });
+            DropTable("dbo.BorrowSettings");
             DropTable("dbo.Reservations");
             DropTable("dbo.Feedbacks");
             DropTable("dbo.Users");
             DropTable("dbo.Libraries");
             DropTable("dbo.BorrowTransactions");
-            DropTable("dbo.BorrowSettings");
             DropTable("dbo.Genres");
             DropTable("dbo.BookGenres");
             DropTable("dbo.Books");

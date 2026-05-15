@@ -136,13 +136,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202605051345102_InitialCreate.cs" />
-    <Compile Include="Migrations\202605051345102_InitialCreate.Designer.cs">
-      <DependentUpon>202605051345102_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202605141547293_MergeMainBranchChanges.cs" />
-    <Compile Include="Migrations\202605141547293_MergeMainBranchChanges.Designer.cs">
-      <DependentUpon>202605141547293_MergeMainBranchChanges.cs</DependentUpon>
+    <Compile Include="Migrations\202605150803313_InitialCreate.cs" />
+    <Compile Include="Migrations\202605150803313_InitialCreate.Designer.cs">
+      <DependentUpon>202605150803313_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Author.cs" />
@@ -256,11 +252,8 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202605051345102_InitialCreate.resx">
-      <DependentUpon>202605051345102_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202605141547293_MergeMainBranchChanges.resx">
-      <DependentUpon>202605141547293_MergeMainBranchChanges.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202605150803313_InitialCreate.resx">
+      <DependentUpon>202605150803313_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
