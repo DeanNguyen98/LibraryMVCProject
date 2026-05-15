@@ -39,17 +39,10 @@ namespace LibraryManagementSystem.Controllers.Admin
         {
             var transaction = db.BorrowTransactions.Find(id);
             if (transaction == null) return HttpNotFound();
+            if (transaction.Status == BorrowStatus.Returned) return RedirectToAction("Index");
 
             transaction.Status = BorrowStatus.Returned;
             transaction.ReturnedAt = DateTime.UtcNow;
-
-            if (DateTime.UtcNow > transaction.DueDate)
-            {
-                var daysOverdue = (DateTime.UtcNow - transaction.DueDate).Days;
-                var settings = db.BorrowSettings.FirstOrDefault();
-                if (settings != null)
-                    transaction.FineAmount = daysOverdue * settings.OverdueFinePerDay;
-            }
 
             var book = db.Books.Find(transaction.BookId);
             if (book != null) book.AvailableCopies += 1;
