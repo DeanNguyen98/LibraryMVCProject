@@ -16,6 +16,7 @@
     <!-- Tabs -->
     <div class="admin-tab-row">
         <button class="admin-tab-btn active" onclick="showTab('borrowed', this)">Active Borrowed</button>
+        <button class="admin-tab-btn" onclick="showTab('returned', this)">Returned</button>
         <button class="admin-tab-btn" onclick="showTab('reservations', this)">Reservations</button>
         <button class="admin-tab-btn" onclick="showTab('fines', this)">Fines</button>
     </div>
@@ -37,7 +38,7 @@
                 </thead>
                 <tbody>
                     @{ int i = 1; }
-                    @foreach (var transaction in Model)
+                    @foreach (var transaction in Model.Where(t => t.Status != LibraryManagementSystem.Models.BorrowStatus.Returned))
                     {
                         <tr>
                             <td>@i</td>
@@ -78,6 +79,66 @@
                             </td>
                         </tr>
                         i++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Returned Tab -->
+    <div id="returned" class="admin-tab-content" style="display:none;">
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member Name</th>
+                        <th>Book Title</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Returned On</th>
+                        <th>Fine Paid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int r = 1; }
+                    @foreach (var transaction in Model.Where(t => t.Status == LibraryManagementSystem.Models.BorrowStatus.Returned))
+                    {
+                        <tr>
+                            <td>@r</td>
+                            <td>@transaction.User.FullName</td>
+                            <td class="td-book">@transaction.Book.Title</td>
+                            <td>@transaction.BorrowedAt.ToString("dd MMM yyyy")</td>
+                            <td>@transaction.DueDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                @if (transaction.ReturnedAt.HasValue)
+                                {
+                                    if (transaction.ReturnedAt.Value <= transaction.DueDate)
+                                    {
+                                        <span class="badge-returned">@transaction.ReturnedAt.Value.ToString("dd MMM yyyy")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-overdue">@transaction.ReturnedAt.Value.ToString("dd MMM yyyy") (Late)</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td>
+                                @if (transaction.FinePaid > 0)
+                                {
+                                    <span class="fine-text">$@transaction.FinePaid.ToString("0.00")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                        </tr>
+                        r++;
                     }
                 </tbody>
             </table>
