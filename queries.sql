@@ -1,5 +1,5 @@
   -- Declare all variables upfront
-  DECLARE @LibraryId INT, @BorrowSettingsId INT;
+  DECLARE @LibraryId INT;
   DECLARE @AuthorZafon INT, @AuthorIshiguro INT, @AuthorKalanithi INT, @AuthorEco INT;
   DECLARE @AuthorBackman INT, @AuthorAllende INT, @AuthorClarke INT, @AuthorOsman INT;
   DECLARE @GenreMystery INT, @GenreClassic INT, @GenreBiography INT;
@@ -14,10 +14,9 @@
   SET @LibraryId = SCOPE_IDENTITY();
 
   -- 2. Borrow Settings
-  INSERT INTO BorrowSettings (LibraryId, SettingName, LoanDurationDays, RenewalLimit, OverdueFinePerDay,
+  INSERT INTO BorrowSettings (SettingName, LoanDurationDays, RenewalLimit, OverdueFinePerDay,
   MaxBorrowableItems, Status, UpdatedAt)
-  VALUES (@LibraryId, 'Standard', 14, 2, 0.10, 5, 'Active', GETUTCDATE());
-  SET @BorrowSettingsId = SCOPE_IDENTITY();
+  VALUES ('Standard', 14, 2, 0.10, 5, 'Active', GETUTCDATE());
 
   -- 3. Authors
   INSERT INTO Authors (Name, Bio) VALUES ('Carlos Ruiz Zafon', NULL);  SET @AuthorZafon = SCOPE_IDENTITY();
@@ -38,52 +37,44 @@
   INSERT INTO Genres (Name) VALUES ('Fantasy');           SET @GenreFantasy = SCOPE_IDENTITY();
 
   -- 5. Books
-  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, BorrowSettingsId,
-  CreatedAt)
+  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, CreatedAt)
   VALUES (@LibraryId, 'The Shadow of the Wind', '9781594200229', 'A boy discovers a mysterious novel in a secret library
-   and becomes obsessed with finding its forgotten author.', 2, 2, 8, @BorrowSettingsId, GETUTCDATE());
+   and becomes obsessed with finding its forgotten author.', 2, 2, 8, GETUTCDATE());
   SET @BookShadow = SCOPE_IDENTITY();
 
-  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, BorrowSettingsId,
-  CreatedAt)
+  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, CreatedAt)
   VALUES (@LibraryId, 'The Remains of the Day', '9780679731726', 'An English butler reflects on his years of service and
-   the choices that shaped his life.', 2, 2, 5, @BorrowSettingsId, GETUTCDATE());
+   the choices that shaped his life.', 2, 2, 5, GETUTCDATE());
   SET @BookRemains = SCOPE_IDENTITY();
 
-  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, BorrowSettingsId,
-  CreatedAt)
+  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, CreatedAt)
   VALUES (@LibraryId, 'When Breath Becomes Air', '9780812988406', 'A neurosurgeon faces his mortality after being
-  diagnosed with terminal cancer.', 1, 0, 7, @BorrowSettingsId, GETUTCDATE());
+  diagnosed with terminal cancer.', 1, 0, 7, GETUTCDATE());
   SET @BookBreath = SCOPE_IDENTITY();
 
-  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, BorrowSettingsId,
-  CreatedAt)
+  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, CreatedAt)
   VALUES (@LibraryId, 'The Name of the Rose', '9780156001311', 'A medieval monk investigates a series of mysterious
-  deaths at a remote Italian abbey.', 2, 2, 4, @BorrowSettingsId, GETUTCDATE());
+  deaths at a remote Italian abbey.', 2, 2, 4, GETUTCDATE());
   SET @BookRose = SCOPE_IDENTITY();
 
-  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, BorrowSettingsId,
-  CreatedAt)
+  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, CreatedAt)
   VALUES (@LibraryId, 'A Man Called Ove', '9781476738024', 'A grumpy widower finds his solitary life disrupted by a
-  boisterous new family next door.', 2, 0, 9, @BorrowSettingsId, GETUTCDATE());
+  boisterous new family next door.', 2, 0, 9, GETUTCDATE());
   SET @BookOve = SCOPE_IDENTITY();
 
-  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, BorrowSettingsId,
-  CreatedAt)
+  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, CreatedAt)
   VALUES (@LibraryId, 'The House of the Spirits', '9780553383805', 'Four generations of a Latin American family navigate
-   love, politics, and supernatural forces.', 2, 2, 6, @BorrowSettingsId, GETUTCDATE());
+   love, politics, and supernatural forces.', 2, 2, 6, GETUTCDATE());
   SET @BookSpirits = SCOPE_IDENTITY();
 
-  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, BorrowSettingsId,
-  CreatedAt)
+  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, CreatedAt)
   VALUES (@LibraryId, 'Piranesi', '9781635575637', 'A man lives alone in a surreal house of infinite halls filled with
-  statues and tidal seas.', 2, 2, 3, @BorrowSettingsId, GETUTCDATE());
+  statues and tidal seas.', 2, 2, 3, GETUTCDATE());
   SET @BookPiranesi = SCOPE_IDENTITY();
 
-  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, BorrowSettingsId,
-  CreatedAt)
+  INSERT INTO Books (LibraryId, Title, Isbn, Summary, TotalCopies, AvailableCopies, BorrowedTimes, CreatedAt)
   VALUES (@LibraryId, 'The Thursday Murder Club', '9781984880963', 'Four retirees in a quiet village meet weekly to
-  investigate cold cases until a real murder occurs.', 2, 0, 11, @BorrowSettingsId, GETUTCDATE());
+  investigate cold cases until a real murder occurs.', 2, 0, 11, GETUTCDATE());
   SET @BookThursday = SCOPE_IDENTITY();
 
   -- 6. BookAuthors
