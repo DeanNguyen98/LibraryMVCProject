@@ -50,7 +50,7 @@
             @Html.Hidden("id", Model.Id)
 
             <div style="margin-top: 25px;">
-                <button type="submit" class="delete-btn" style="text-decoration: none; display: inline-block;">Confirm Delete</button>
+                <button type="submit" class="delete-btn" style="background: red; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Confirm Delete</button>
                 <a href="@Url.Action("Index", "AdminLibrary")" class="edit-btn" style="text-decoration: none;">Cancel</a>
             </div>
         }

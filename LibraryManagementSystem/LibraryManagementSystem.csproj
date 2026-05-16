@@ -127,6 +127,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\Admin\AdminBorrowSettingsController.cs" />
     <Compile Include="Controllers\Admin\AdminFeedbackController.cs" />
     <Compile Include="Controllers\Admin\AdminHomeController.cs" />
     <Compile Include="Controllers\Admin\AdminTransactionsController.cs" />
@@ -167,10 +168,14 @@
     <Compile Include="ViewModels\Admin\BookCreateViewModel.cs" />
     <Compile Include="ViewModels\Admin\BookDetailsViewModel.cs" />
     <Compile Include="ViewModels\Admin\BookEditViewModel.cs" />
+    <Compile Include="ViewModels\Admin\BorrowSettingCreateViewModel.cs" />
+    <Compile Include="ViewModels\Admin\BorrowSettingDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Admin\BorrowSettingEditViewModel.cs" />
     <Compile Include="ViewModels\Admin\LibraryCreateViewModel.cs" />
     <Compile Include="ViewModels\Admin\LibraryDetailsViewModel.cs" />
     <Compile Include="ViewModels\Admin\LibraryEditViewModel.cs" />
     <Compile Include="ViewModels\Admin\ManageBooksViewModel.cs" />
+    <Compile Include="ViewModels\Admin\ManageBorrowSettingsViewModel.cs" />
     <Compile Include="ViewModels\Admin\ManageLibraryViewModel.cs" />
     <Compile Include="ViewModels\Auth\AdminSignInViewModel.cs" />
     <Compile Include="ViewModels\Auth\MemberSignInViewModel.cs" />
@@ -252,12 +257,22 @@
     <Content Include="Views\Admin\Library\Edit.cshtml" />
     <Content Include="Views\Admin\Books\Index.cshtml" />
     <Content Include="Views\Admin\Library\Delete.cshtml" />
+    <Content Include="Views\Admin\BorrowSettings\Index.cshtml" />
+    <Content Include="Views\Admin\BorrowSettings\Details.cshtml" />
+    <Content Include="Views\Admin\BorrowSettings\Create.cshtml" />
+    <Content Include="Views\Admin\BorrowSettings\Edit.cshtml" />
+    <Content Include="Views\Admin\BorrowSettings\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\AdminBooks\" />
+    <Folder Include="Views\AdminBorrowSettings\" />
     <Folder Include="Views\Adminlibrarycontroller\" />
     <Folder Include="Views\AdminLibrary\" />
+    <Folder Include="Views\BorrowSettingCreateViewModel\" />
+    <Folder Include="Views\BorrowSettingDetailsViewModel\" />
+    <Folder Include="Views\BorrowSettingEditViewModel\" />
+    <Folder Include="Views\ManageBorrowSettingsViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

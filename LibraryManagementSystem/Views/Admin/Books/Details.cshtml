@@ -1,51 +1,60 @@
-﻿@model LibraryManagementSystem.ViewModels.Admin.LibraryDetailsViewModel
+﻿@model LibraryManagementSystem.ViewModels.Admin.BookDetailsViewModel
 
 @{
-    ViewBag.Title = "Library Details";
+    ViewBag.Title = "Book Details";
 }
 
 <div class="page-content">
     <!-- Teal Header Banner -->
     <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
-        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Library Details</h1>
-        <p style="margin: 0; font-size: 16px; opacity: 0.9;">View detailed information about the selected library.</p>
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Book Details</h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">View detailed information about the selected book.</p>
     </div>
 
     <div class="settings-container">
         <table class="activity-table">
             <tbody>
                 <tr>
-                    <th style="width: 200px;">Library Name</th>
-                    <td>@Model.Name</td>
+                    <th style="width: 200px;">Book Title</th>
+                    <td>@Model.Title</td>
                 </tr>
 
                 <tr>
-                    <th>Location</th>
-                    <td>@Model.Location</td>
+                    <th>Library</th>
+                    <td>@Model.LibraryName</td>
                 </tr>
 
                 <tr>
-                    <th>Operating Hours</th>
-                    <td>@(string.IsNullOrEmpty(Model.OperatingHours) ? "—" : Model.OperatingHours)</td>
+                    <th>Author(s)</th>
+                    <td>@Model.Authors</td>
                 </tr>
 
                 <tr>
-                    <th>Contact Email</th>
-                    <td>@(string.IsNullOrEmpty(Model.ContactEmail) ? "—" : Model.ContactEmail)</td>
+                    <th>Genre(s)</th>
+                    <td>@Model.Genres</td>
                 </tr>
 
                 <tr>
-                    <th>Contact Phone</th>
-                    <td>@(string.IsNullOrEmpty(Model.ContactPhone) ? "—" : Model.ContactPhone)</td>
+                    <th>ISBN</th>
+                    <td>@Model.Isbn</td>
                 </tr>
 
                 <tr>
-                    <th>Total Books</th>
+                    <th>Total Copies</th>
+                    <td>@Model.TotalCopies</td>
+                </tr>
+
+                <tr>
+                    <th>Available Copies</th>
                     <td>
-                        @Model.TotalBooks
-                        @if (Model.TotalBooks > 0)
+                        @Model.AvailableCopies
+                        @if (Model.AvailableCopies > 0)
                         {
-                            <span class="status-returned" style="margin-left: 10px;">@Model.TotalBooks book(s)</span>
+                            <span class="status-returned" style="margin-left: 10px;">Available</span>
+                        }
+                        else
+                        {
+                            <span class="status-overdue" style="margin-left: 10px;">Unavailable</span>
                         }
                     </td>
                 </tr>
@@ -55,16 +64,26 @@
                     <td>@Model.CreatedAt.ToString("dd MMM yyyy")</td>
                 </tr>
 
+                @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
+                {
+                    <tr>
+                        <th>Cover Image</th>
+                        <td>
+                            <img src="@Model.CoverImageUrl" alt="Book Cover" style="max-width: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+                        </td>
+                    </tr>
+                }
+
                 <tr>
-                    <th>Description</th>
-                    <td>@(string.IsNullOrEmpty(Model.Description) ? "No description available" : Model.Description)</td>
+                    <th>Summary</th>
+                    <td>@(string.IsNullOrEmpty(Model.Summary) ? "No summary available" : Model.Summary)</td>
                 </tr>
             </tbody>
         </table>
 
         <div style="margin-top: 25px;">
-            <a href="@Url.Action("Edit", "AdminLibrary", new { id = Model.Id })" class="edit-btn" style="text-decoration: none;">Edit Library</a>
-            <a href="@Url.Action("Index", "AdminLibrary")" class="add-btn" style="text-decoration: none;">Back to List</a>
+            <a href="@Url.Action("Edit", "AdminBooks", new { id = Model.Id })" class="edit-btn" style="text-decoration: none;">Edit Book</a>
+            <a href="@Url.Action("Index", "AdminBooks")" class="add-btn" style="text-decoration: none;">Back to List</a>
         </div>
     </div>
 </div>
