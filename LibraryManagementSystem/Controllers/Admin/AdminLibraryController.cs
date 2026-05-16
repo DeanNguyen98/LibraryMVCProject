@@ -194,11 +194,27 @@ namespace LibraryManagementSystem.Controllers.Admin
             if (library == null)
                 return HttpNotFound();
 
-            db.Libraries.Remove(library);
-            await db.SaveChangesAsync();
+            // Check if library has books
+            var bookCount = await db.Books.CountAsync(b => b.LibraryId == id);
+            if (bookCount > 0)
+            {
+                TempData["Error"] = $"Cannot delete this library. It has {bookCount} book(s) attached. Please remove or reassign the books first.";
+                return RedirectToAction("Index");
+            }
 
-            TempData["Success"] = "Library deleted successfully.";
-            return RedirectToAction("Index");
+            try
+            {
+                db.Libraries.Remove(library);
+                await db.SaveChangesAsync();
+
+                TempData["Success"] = "Library deleted successfully.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Cannot delete this library because it has associated records. Please remove related books first.";
+                return RedirectToAction("Index");
+            }
         }
 
         protected override void Dispose(bool disposing)

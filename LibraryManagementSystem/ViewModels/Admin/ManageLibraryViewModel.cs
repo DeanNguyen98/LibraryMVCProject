@@ -9,6 +9,8 @@ namespace LibraryManagementSystem.ViewModels.Admin
     {
         public List<LibraryRowViewModel> Libraries { get; set; }
             = new List<LibraryRowViewModel>();
+
+        public string SearchTerm { get; set; }
     }
     public class LibraryRowViewModel
     {
