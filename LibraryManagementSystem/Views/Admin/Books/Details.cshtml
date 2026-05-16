@@ -1,79 +1,70 @@
-﻿@{
-    ViewBag.Title = "Book Details";
+﻿@model LibraryManagementSystem.ViewModels.Admin.LibraryDetailsViewModel
+
+@{
+    ViewBag.Title = "Library Details";
 }
 
 <div class="page-content">
+    <!-- Teal Header Banner -->
+    <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Library Details</h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">View detailed information about the selected library.</p>
+    </div>
 
     <div class="settings-container">
-
-        <div class="page-header">
-            <h1>Book Details</h1>
-
-            <p class="subtitle">
-                View detailed information about the selected book.
-            </p>
-        </div>
-
         <table class="activity-table">
-
             <tbody>
-
                 <tr>
-                    <th>Book Title</th>
-                    <td>C# Programming</td>
+                    <th style="width: 200px;">Library Name</th>
+                    <td>@Model.Name</td>
                 </tr>
 
                 <tr>
-                    <th>Library ID</th>
-                    <td>1</td>
+                    <th>Location</th>
+                    <td>@Model.Location</td>
                 </tr>
 
                 <tr>
-                    <th>Author</th>
-                    <td>John Smith</td>
+                    <th>Operating Hours</th>
+                    <td>@(string.IsNullOrEmpty(Model.OperatingHours) ? "—" : Model.OperatingHours)</td>
                 </tr>
 
                 <tr>
-                    <th>Genre</th>
-                    <td>Programming</td>
+                    <th>Contact Email</th>
+                    <td>@(string.IsNullOrEmpty(Model.ContactEmail) ? "—" : Model.ContactEmail)</td>
                 </tr>
 
                 <tr>
-                    <th>ISBN</th>
-                    <td>978-1234567890</td>
+                    <th>Contact Phone</th>
+                    <td>@(string.IsNullOrEmpty(Model.ContactPhone) ? "—" : Model.ContactPhone)</td>
                 </tr>
 
                 <tr>
-                    <th>Total Copies</th>
-                    <td>10</td>
-                </tr>
-
-                <tr>
-                    <th>Available Copies</th>
-                    <td>6</td>
-                </tr>
-
-                <tr>
-                    <th>Borrow Setting</th>
-                    <td>Standard Borrow Rule</td>
+                    <th>Total Books</th>
+                    <td>
+                        @Model.TotalBooks
+                        @if (Model.TotalBooks > 0)
+                        {
+                            <span class="status-returned" style="margin-left: 10px;">@Model.TotalBooks book(s)</span>
+                        }
+                    </td>
                 </tr>
 
                 <tr>
                     <th>Created Date</th>
-                    <td>10 May 2026</td>
+                    <td>@Model.CreatedAt.ToString("dd MMM yyyy")</td>
                 </tr>
 
                 <tr>
-                    <th>Summary</th>
-                    <td>
-                        Introduction to C# programming concepts and application development.
-                    </td>
+                    <th>Description</th>
+                    <td>@(string.IsNullOrEmpty(Model.Description) ? "No description available" : Model.Description)</td>
                 </tr>
-
             </tbody>
-
         </table>
 
+        <div style="margin-top: 25px;">
+            <a href="@Url.Action("Edit", "AdminLibrary", new { id = Model.Id })" class="edit-btn" style="text-decoration: none;">Edit Library</a>
+            <a href="@Url.Action("Index", "AdminLibrary")" class="add-btn" style="text-decoration: none;">Back to List</a>
+        </div>
     </div>
-
 </div>

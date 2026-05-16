@@ -1,0 +1,58 @@
+﻿@model LibraryManagementSystem.ViewModels.Admin.LibraryDetailsViewModel
+
+@{
+    ViewBag.Title = "Delete Library";
+}
+
+<div class="page-content">
+    <!-- Teal Header Banner -->
+    <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Delete Library</h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">Are you sure you want to delete this library?</p>
+    </div>
+
+    <div class="settings-container">
+        <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 16px; border-radius: 6px; margin-bottom: 25px;">
+            <p style="margin: 0; color: #991b1b; font-weight: 600;">⚠️ Warning: This action cannot be undone.</p>
+        </div>
+
+        @if (Model.TotalBooks > 0)
+        {
+            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 6px; margin-bottom: 25px;">
+                <p style="margin: 0; color: #92400e; font-weight: 600;">⚠️ This library has @Model.TotalBooks book(s) associated with it. Deleting it may cause data inconsistencies.</p>
+            </div>
+        }
+
+        <table class="activity-table">
+            <tbody>
+                <tr>
+                    <th style="width: 200px;">Library Name</th>
+                    <td>@Model.Name</td>
+                </tr>
+                <tr>
+                    <th>Location</th>
+                    <td>@Model.Location</td>
+                </tr>
+                <tr>
+                    <th>Total Books</th>
+                    <td>@Model.TotalBooks</td>
+                </tr>
+                <tr>
+                    <th>Created Date</th>
+                    <td>@Model.CreatedAt.ToString("dd MMM yyyy")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        @using (Html.BeginForm("Delete", "AdminLibrary", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("id", Model.Id)
+
+            <div style="margin-top: 25px;">
+                <button type="submit" class="delete-btn" style="text-decoration: none; display: inline-block;">Confirm Delete</button>
+                <a href="@Url.Action("Index", "AdminLibrary")" class="edit-btn" style="text-decoration: none;">Cancel</a>
+            </div>
+        }
+    </div>
+</div>

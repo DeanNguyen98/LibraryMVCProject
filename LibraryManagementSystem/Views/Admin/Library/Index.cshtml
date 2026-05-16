@@ -1,0 +1,62 @@
+﻿@model LibraryManagementSystem.ViewModels.Admin.ManageLibraryViewModel
+
+@{
+    ViewBag.Title = "Manage Libraries";
+}
+
+<div class="page-content">
+    <!-- Teal Header Banner -->
+    <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Manage Libraries</h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">Create and manage library profiles and locations.</p>
+    </div>
+
+    <div class="settings-container">
+        <!-- Search and Add Button -->
+        <div class="top-actions">
+            @using (Html.BeginForm("Index", "AdminLibrary", FormMethod.Get))
+            {
+                <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Search libraries..." class="search-box" />
+            }
+            <a href="@Url.Action("Create", "AdminLibrary")" class="add-btn">+ Add New Library</a>
+        </div>
+
+        <!-- Libraries Table -->
+        <table class="activity-table">
+            <thead>
+                <tr>
+                    <th>Library Name</th>
+                    <th>Location</th>
+                    <th>Operating Hours</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Libraries != null && Model.Libraries.Any())
+                {
+                    foreach (var library in Model.Libraries)
+                    {
+                        <tr>
+                            <td>@library.Name</td>
+                            <td>@library.Location</td>
+                            <td>@(string.IsNullOrEmpty(library.OperatingHours) ? "—" : library.OperatingHours)</td>
+                            <td>@(string.IsNullOrEmpty(library.ContactEmail) ? "—" : library.ContactEmail)</td>
+                            <td>
+                                <a href="@Url.Action("Details", "AdminLibrary", new { id = library.Id })" class="edit-btn" style="background: #6b7280; text-decoration: none;">View</a>
+                                <a href="@Url.Action("Edit", "AdminLibrary", new { id = library.Id })" class="edit-btn" style="text-decoration: none;">Edit</a>
+                                <a href="@Url.Action("Delete", "AdminLibrary", new { id = library.Id })" class="delete-btn" style="text-decoration: none;">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #999; padding: 30px;">No libraries found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

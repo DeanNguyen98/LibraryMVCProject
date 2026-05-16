@@ -131,6 +131,8 @@
     <Compile Include="Controllers\Admin\AdminHomeController.cs" />
     <Compile Include="Controllers\Admin\AdminTransactionsController.cs" />
     <Compile Include="Controllers\User\UserController.cs" />
+    <Compile Include="Controllers\Admin\AdminBooksController.cs" />
+    <Compile Include="Controllers\Admin\AdminLibraryController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Data\ApplicationDbContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -162,6 +164,14 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Admin\AdminHomeViewModel.cs" />
+    <Compile Include="ViewModels\Admin\BookCreateViewModel.cs" />
+    <Compile Include="ViewModels\Admin\BookDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Admin\BookEditViewModel.cs" />
+    <Compile Include="ViewModels\Admin\LibraryCreateViewModel.cs" />
+    <Compile Include="ViewModels\Admin\LibraryDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Admin\LibraryEditViewModel.cs" />
+    <Compile Include="ViewModels\Admin\ManageBooksViewModel.cs" />
+    <Compile Include="ViewModels\Admin\ManageLibraryViewModel.cs" />
     <Compile Include="ViewModels\Auth\AdminSignInViewModel.cs" />
     <Compile Include="ViewModels\Auth\MemberSignInViewModel.cs" />
     <Compile Include="ViewModels\Auth\MemberSignUpViewModel.cs" />
@@ -232,9 +242,22 @@
     <Content Include="Views\User\Books.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\Transactions.cshtml" />
+    <Content Include="Views\Admin\Books\Details.cshtml" />
+    <Content Include="Views\Admin\Library\Details.cshtml" />
+    <Content Include="Views\Admin\Library\Index.cshtml" />
+    <Content Include="Views\Admin\Books\Create.cshtml" />
+    <Content Include="Views\Admin\Library\Create.cshtml" />
+    <Content Include="Views\Admin\Books\Edit.cshtml" />
+    <Content Include="Views\Admin\Books\Delete.cshtml" />
+    <Content Include="Views\Admin\Library\Edit.cshtml" />
+    <Content Include="Views\Admin\Books\Index.cshtml" />
+    <Content Include="Views\Admin\Library\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\AdminBooks\" />
+    <Folder Include="Views\Adminlibrarycontroller\" />
+    <Folder Include="Views\AdminLibrary\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
