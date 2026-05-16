@@ -1,96 +1,86 @@
-﻿@{
-    ViewBag.Title = "Borrow Settings";
+﻿@model LibraryManagementSystem.ViewModels.Admin.ManageBorrowSettingsViewModel
+
+@{
+    ViewBag.Title = "Manage Borrow Settings";
 }
 
 <div class="page-content">
+    <!--Header Banner -->
+    <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Manage Borrow Settings</h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">Configure borrowing parameters such as loan duration, renewal limits, and fines.</p>
+    </div>
 
     <div class="settings-container">
-
-        <div class="page-header">
-            <h1>Manage Borrow Settings</h1>
-
-            <p class="subtitle">
-                Create and manage borrowing rules for the library.
-            </p>
-        </div>
-
+        <!-- Add Button -->
         <div class="top-actions">
-
-            <input type="text"
-                   placeholder="Search settings..."
-                   class="search-box" />
-
-            <button class="add-btn">
-                Add New Setting
-            </button>
-
+            <div></div>
+            <a href="@Url.Action("Create", "AdminBorrowSettings")" class="add-btn">+ Add New Setting</a>
         </div>
 
-        <table class="activity-table">
+        @if (TempData["Success"] != null)
+        {
+            <div style="background: #d1fae5; border-left: 4px solid #10b981; padding: 16px; border-radius: 6px; margin-bottom: 20px;">
+                <p style="margin: 0; color: #065f46; font-weight: 600;">✓ @TempData["Success"]</p>
+            </div>
+        }
 
+        @if (TempData["Error"] != null)
+        {
+            <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 16px; border-radius: 6px; margin-bottom: 20px;">
+                <p style="margin: 0; color: #991b1b; font-weight: 600;">⚠️ @TempData["Error"]</p>
+            </div>
+        }
+
+        <!-- Settings Table -->
+        <table class="activity-table">
             <thead>
                 <tr>
                     <th>Setting Name</th>
-                    <th>Borrow Duration</th>
-                    <th>Penalty</th>
-                    <th>Max Books</th>
+                    <th>Loan Duration</th>
+                    <th>Renewal Limit</th>
+                    <th>Fine/Day</th>
+                    <th>Max Items</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
-
             <tbody>
-
-                <tr>
-                    <td>Standard Borrow Rule</td>
-                    <td>14 days</td>
-                    <td>$0.10</td>
-                    <td>3 books</td>
-
-                    <td>
-                        <span class="status-active">
-                            Available
-                        </span>
-                    </td>
-
-                    <td>
-                        <button class="edit-btn">
-                            Edit
-                        </button>
-
-                        <button class="delete-btn">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Premium Member Rule</td>
-                    <td>30 days</td>
-                    <td>$0.05</td>
-                    <td>5 books</td>
-
-                    <td>
-                        <span class="status-active">
-                            Available
-                        </span>
-                    </td>
-
-                    <td>
-                        <button class="edit-btn">
-                            Edit
-                        </button>
-
-                        <button class="delete-btn">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-
+                @if (Model.Settings != null && Model.Settings.Any())
+                {
+                    foreach (var setting in Model.Settings)
+                    {
+                        <tr>
+                            <td><strong>@setting.SettingName</strong></td>
+                            <td>@setting.LoanDurationDays days</td>
+                            <td>@setting.RenewalLimit</td>
+                            <td>$@setting.OverdueFinePerDay.ToString("0.00")</td>
+                            <td>@setting.MaxBorrowableItems</td>
+                            <td>
+                                @if (setting.Status == "Active")
+                                {
+                                    <span class="status-returned">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="status-overdue">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", "AdminBorrowSettings", new { id = setting.Id })" class="edit-btn" style="background: #6b7280; text-decoration: none;">View</a>
+                                <a href="@Url.Action("Edit", "AdminBorrowSettings", new { id = setting.Id })" class="edit-btn" style="text-decoration: none;">Edit</a>
+                                <a href="@Url.Action("Delete", "AdminBorrowSettings", new { id = setting.Id })" class="delete-btn" style="text-decoration: none;">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #999; padding: 30px;">No borrow settings found. Create one to get started.</td>
+                    </tr>
+                }
             </tbody>
-
         </table>
-
     </div>
-
 </div>

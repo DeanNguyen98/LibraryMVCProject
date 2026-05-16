@@ -1,0 +1,68 @@
+﻿@model LibraryManagementSystem.ViewModels.Admin.BorrowSettingDetailsViewModel
+
+@{
+    ViewBag.Title = "Borrow Setting Details";
+}
+
+<div class="page-content">
+    <!-- Teal Header Banner -->
+    <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Borrow Setting Details</h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">View detailed information about this borrow setting.</p>
+    </div>
+
+    <div class="settings-container">
+        <table class="activity-table">
+            <tbody>
+                <tr>
+                    <th style="width: 250px;">Setting Name</th>
+                    <td><strong>@Model.SettingName</strong></td>
+                </tr>
+
+                <tr>
+                    <th>Loan Duration</th>
+                    <td>@Model.LoanDurationDays days</td>
+                </tr>
+
+                <tr>
+                    <th>Renewal Limit</th>
+                    <td>@Model.RenewalLimit renewal(s) allowed</td>
+                </tr>
+
+                <tr>
+                    <th>Overdue Fine Per Day</th>
+                    <td>$@Model.OverdueFinePerDay.ToString("0.00")</td>
+                </tr>
+
+                <tr>
+                    <th>Maximum Borrowable Items</th>
+                    <td>@Model.MaxBorrowableItems item(s)</td>
+                </tr>
+
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        @if (Model.Status == "Active")
+                        {
+                            <span class="status-returned">Active</span>
+                        }
+                        else
+                        {
+                            <span class="status-overdue">Inactive</span>
+                        }
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Last Updated</th>
+                    <td>@Model.UpdatedAt.ToString("dd MMM yyyy hh:mm tt")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 25px;">
+            <a href="@Url.Action("Edit", "AdminBorrowSettings", new { id = Model.Id })" class="edit-btn" style="text-decoration: none;">Edit Setting</a>
+            <a href="@Url.Action("Index", "AdminBorrowSettings")" class="add-btn" style="text-decoration: none;">Back to List</a>
+        </div>
+    </div>
+</div>
