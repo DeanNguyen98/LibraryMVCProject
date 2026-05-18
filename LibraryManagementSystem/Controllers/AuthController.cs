@@ -98,7 +98,7 @@ namespace LibraryManagementSystem.Controllers
             await db.SaveChangesAsync();
 
             SetAuthCookie(user);
-            return Redirect("/Admin/Home");
+            return Redirect("/User/Home");
         }
 
         [Route("AdminSignIn")]
