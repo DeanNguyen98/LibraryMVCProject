@@ -265,14 +265,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\AdminBooks\" />
-    <Folder Include="Views\AdminBorrowSettings\" />
-    <Folder Include="Views\Adminlibrarycontroller\" />
-    <Folder Include="Views\AdminLibrary\" />
-    <Folder Include="Views\BorrowSettingCreateViewModel\" />
-    <Folder Include="Views\BorrowSettingDetailsViewModel\" />
-    <Folder Include="Views\BorrowSettingEditViewModel\" />
-    <Folder Include="Views\ManageBorrowSettingsViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
