@@ -1,0 +1,60 @@
+.navbar-library {
+    background-color: #1b2a4a;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-library .navbar-brand {
+    color: #ffffff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.navbar-library .navbar-brand:hover {
+    color: #ffffff;
+}
+
+.navbar-library .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.navbar-library .nav-link:hover {
+    color: #ffffff;
+    border-bottom-color: rgba(46, 139, 122, 0.5);
+}
+
+.navbar-library .nav-link.active {
+    color: #ffffff;
+    border-bottom-color: #2e8b7a;
+}
+
+.navbar-library .nav-user {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.9rem;
+    cursor: default;
+    pointer-events: none;
+}
+
+.navbar-library form {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-library .btn-signout {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75);
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+    line-height: 1.5;
+}
+
+.navbar-library .btn-signout:hover {
+    border-color: #ffffff;
+    color: #ffffff;
+}
