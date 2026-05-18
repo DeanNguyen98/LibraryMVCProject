@@ -147,9 +147,9 @@
     <Compile Include="Migrations\202605131416500_GlobalBorrowSettings.Designer.cs">
       <DependentUpon>202605131416500_GlobalBorrowSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202605150803313_InitialCreate.cs" />
-    <Compile Include="Migrations\202605150803313_InitialCreate.Designer.cs">
-      <DependentUpon>202605150803313_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202605051345102_InitialCreate.cs" />
+    <Compile Include="Migrations\202605051345102_InitialCreate.Designer.cs">
+      <DependentUpon>202605051345102_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Author.cs" />
@@ -308,8 +308,8 @@
     <EmbeddedResource Include="Migrations\202605131416500_GlobalBorrowSettings.resx">
       <DependentUpon>202605131416500_GlobalBorrowSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202605150803313_InitialCreate.resx">
-      <DependentUpon>202605150803313_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202605051345102_InitialCreate.resx">
+      <DependentUpon>202605051345102_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
