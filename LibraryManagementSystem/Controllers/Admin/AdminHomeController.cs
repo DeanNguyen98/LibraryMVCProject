@@ -20,7 +20,7 @@ namespace LibraryManagementSystem.Controllers.Admin
             // Stat cards from real database
             var totalBooks = db.Books.Count();
             var borrowedBooks = db.BorrowTransactions
-                .Count(t => t.Status == BorrowStatus.Borrowed);
+                .Count(t => t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed);
             var overdueBooks = db.BorrowTransactions
                 .Count(t => t.Status == BorrowStatus.Overdue);
             var totalMembers = db.Users
