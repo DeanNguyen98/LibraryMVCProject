@@ -12,6 +12,13 @@
     </div>
 
     <div class="settings-container">
+        @if (TempData["Error"] != null)
+        {
+            <div style="background:#fee2e2;border:1px solid #fca5a5;color:#b91c1c;padding:12px 16px;border-radius:8px;margin-bottom:20px;">
+                @TempData["Error"]
+            </div>
+        }
+
         @using (Html.BeginForm("Edit", "AdminBorrowSettings", FormMethod.Post))
         {
             @Html.AntiForgeryToken()

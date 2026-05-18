@@ -1,33 +1,44 @@
-﻿@model LibraryManagementSystem.ViewModels.Admin.ManageBooksViewModel
+@model LibraryManagementSystem.ViewModels.Admin.ManageBooksViewModel
 
 @{
     ViewBag.Title = "Manage Books";
 }
 
-<div class="page-content">
-    <!-- Teal Header Banner -->
-    <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
-        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Manage Books</h1>
-        <p style="margin: 0; font-size: 16px; opacity: 0.9;">Add and manage books available in the library.</p>
+<link rel="stylesheet" href="~/Content/AdminBooks.css" />
+
+<div class="admin-page-banner">
+    <h2>Manage Books</h2>
+    <p>Add and manage books available in the library.</p>
+</div>
+
+<div class="admin-page-body">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-error">@TempData["Error"]</div>
+    }
+
+    <div class="table-toolbar">
+        @using (Html.BeginForm("Index", "AdminBooks", FormMethod.Get))
+        {
+            <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Search books..." class="toolbar-search" />
+        }
+        <a href="@Url.Action("Create", "AdminBooks")" class="btn-teal">+ Add New Book</a>
     </div>
 
-    <div class="settings-container">
-        <!-- Search and Add Button -->
-        <div class="top-actions">
-            @using (Html.BeginForm("Index", "AdminBooks", FormMethod.Get))
-            {
-                <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Search books..." class="search-box" />
-            }
-            <a href="@Url.Action("Create", "AdminBooks")" class="add-btn">+ Add New Book</a>
-        </div>
-
-        <!-- Books Table -->
-        <table class="activity-table">
+    <div class="admin-table-wrap">
+        <table class="admin-table">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Book Title</th>
                     <th>Author</th>
                     <th>Genre</th>
+                    <th>Available Copies</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -35,37 +46,42 @@
             <tbody>
                 @if (Model.Books != null && Model.Books.Any())
                 {
+                    int i = 1;
                     foreach (var book in Model.Books)
                     {
                         <tr>
-                            <td>@book.Title</td>
+                            <td>@i</td>
+                            <td class="td-primary">@book.Title</td>
                             <td>@book.Authors</td>
                             <td>@book.Genres</td>
+                            <td>@book.AvailableCopies / @book.TotalCopies</td>
                             <td>
                                 @if (book.AvailableCopies > 0)
                                 {
-                                    <span class="status-returned">Available</span>
+                                    <span class="badge-available">Available</span>
                                 }
                                 else
                                 {
-                                    <span class="status-overdue">Unavailable</span>
+                                    <span class="badge-unavailable">Unavailable</span>
                                 }
                             </td>
                             <td>
-                                <a href="@Url.Action("Details", "AdminBooks", new { id = book.Id })" class="edit-btn" style="background: #6b7280; text-decoration: none;">View</a>
-                                <a href="@Url.Action("Edit", "AdminBooks", new { id = book.Id })" class="edit-btn" style="text-decoration: none;">Edit</a>
-                                <a href="@Url.Action("Delete", "AdminBooks", new { id = book.Id })" class="delete-btn" style="text-decoration: none;">Delete</a>
+                                <a href="@Url.Action("Details", "AdminBooks", new { id = book.Id })" class="btn-sm-grey">View</a>
+                                <a href="@Url.Action("Edit", "AdminBooks", new { id = book.Id })" class="btn-sm-teal">Edit</a>
+                                <a href="@Url.Action("Delete", "AdminBooks", new { id = book.Id })" class="btn-sm-danger">Delete</a>
                             </td>
                         </tr>
+                        i++;
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="5" style="text-align: center; color: #999; padding: 30px;">No books found.</td>
+                        <td colspan="7" class="td-empty">No books found.</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+
 </div>

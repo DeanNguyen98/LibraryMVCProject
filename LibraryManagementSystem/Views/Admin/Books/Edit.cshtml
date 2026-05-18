@@ -1,84 +1,84 @@
-﻿@model LibraryManagementSystem.ViewModels.Admin.BookEditViewModel
+@model LibraryManagementSystem.ViewModels.Admin.BookEditViewModel
 
 @{
     ViewBag.Title = "Edit Book";
 }
 
-<div class="page-content">
-    <div class="settings-container">
-        <div class="page-header">
-            <h1>Edit Book</h1>
-            <p class="subtitle">Update book information.</p>
+<link rel="stylesheet" href="~/Content/AdminForm.css" />
+
+<div class="admin-page-banner">
+    <h2>Edit Book</h2>
+    <p>Update book information.</p>
+</div>
+
+<div class="admin-form-card">
+    @using (Html.BeginForm("Edit", "AdminBooks", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="form-group">
+            <label class="form-label">Book Title *</label>
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-input", placeholder = "Enter book title" })
+            @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
         </div>
 
-        @using (Html.BeginForm("Edit", "AdminBooks", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(m => m.Id)
+        <div class="form-group">
+            <label class="form-label">ISBN *</label>
+            @Html.TextBoxFor(m => m.Isbn, new { @class = "form-input", placeholder = "Enter ISBN", maxlength = 20 })
+            @Html.ValidationMessageFor(m => m.Isbn, "", new { @class = "text-danger" })
+        </div>
 
+        <div class="form-group">
+            <label class="form-label">Authors</label>
+            @Html.TextBoxFor(m => m.AuthorNames, new { @class = "form-input", placeholder = "Enter author names separated by commas" })
+            @Html.ValidationMessageFor(m => m.AuthorNames, "", new { @class = "text-danger" })
+            <span class="form-hint">Separate multiple authors with commas (e.g., John Smith, Jane Doe)</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Genres</label>
+            @Html.TextBoxFor(m => m.GenreNames, new { @class = "form-input", placeholder = "Enter genres separated by commas" })
+            @Html.ValidationMessageFor(m => m.GenreNames, "", new { @class = "text-danger" })
+            <span class="form-hint">Separate multiple genres with commas (e.g., Fiction, Mystery)</span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Library *</label>
+            @Html.DropDownListFor(m => m.LibraryId, Model.LibraryOptions, "-- Select Library --", new { @class = "form-select" })
+            @Html.ValidationMessageFor(m => m.LibraryId, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-grid-2">
             <div class="form-group">
-                @Html.LabelFor(m => m.Title, "Book Title *")
-                @Html.TextBoxFor(m => m.Title, new { @class = "form-control", placeholder = "Enter book title" })
-                @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.Isbn, "ISBN *")
-                @Html.TextBoxFor(m => m.Isbn, new { @class = "form-control", placeholder = "Enter ISBN", maxlength = 20 })
-                @Html.ValidationMessageFor(m => m.Isbn, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.AuthorNames, "Authors")
-                @Html.TextBoxFor(m => m.AuthorNames, new { @class = "form-control", placeholder = "Enter author names separated by commas" })
-                @Html.ValidationMessageFor(m => m.AuthorNames, "", new { @class = "text-danger" })
-                <small>Separate multiple authors with commas (e.g., John Smith, Jane Doe)</small>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.GenreNames, "Genres")
-                @Html.TextBoxFor(m => m.GenreNames, new { @class = "form-control", placeholder = "Enter genres separated by commas" })
-                @Html.ValidationMessageFor(m => m.GenreNames, "", new { @class = "text-danger" })
-                <small>Separate multiple genres with commas (e.g., Fiction, Mystery)</small>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.LibraryId, "Library *")
-                @Html.DropDownListFor(m => m.LibraryId, Model.LibraryOptions, "-- Select Library --", new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.LibraryId, "", new { @class = "text-danger" })
-            </div>
-
-
-            <div class="form-group">
-                @Html.LabelFor(m => m.TotalCopies, "Total Copies *")
-                @Html.TextBoxFor(m => m.TotalCopies, new { @class = "form-control", type = "number", min = 1 })
+                <label class="form-label">Total Copies *</label>
+                @Html.TextBoxFor(m => m.TotalCopies, new { @class = "form-input", type = "number", min = 1 })
                 @Html.ValidationMessageFor(m => m.TotalCopies, "", new { @class = "text-danger" })
             </div>
-
             <div class="form-group">
-                @Html.LabelFor(m => m.AvailableCopies, "Available Copies *")
-                @Html.TextBoxFor(m => m.AvailableCopies, new { @class = "form-control", type = "number", min = 0 })
+                <label class="form-label">Available Copies *</label>
+                @Html.TextBoxFor(m => m.AvailableCopies, new { @class = "form-input", type = "number", min = 0 })
                 @Html.ValidationMessageFor(m => m.AvailableCopies, "", new { @class = "text-danger" })
             </div>
+        </div>
 
-            <div class="form-group">
-                @Html.LabelFor(m => m.CoverImageUrl, "Cover Image URL")
-                @Html.TextBoxFor(m => m.CoverImageUrl, new { @class = "form-control", placeholder = "Enter image URL" })
-                @Html.ValidationMessageFor(m => m.CoverImageUrl, "", new { @class = "text-danger" })
-            </div>
+        <div class="form-group">
+            <label class="form-label">Cover Image URL</label>
+            @Html.TextBoxFor(m => m.CoverImageUrl, new { @class = "form-input", placeholder = "Enter image URL" })
+            @Html.ValidationMessageFor(m => m.CoverImageUrl, "", new { @class = "text-danger" })
+        </div>
 
-            <div class="form-group">
-                @Html.LabelFor(m => m.Summary, "Summary")
-                @Html.TextAreaFor(m => m.Summary, new { @class = "form-control", rows = 4, placeholder = "Enter book summary" })
-                @Html.ValidationMessageFor(m => m.Summary, "", new { @class = "text-danger" })
-            </div>
+        <div class="form-group">
+            <label class="form-label">Summary</label>
+            @Html.TextAreaFor(m => m.Summary, new { @class = "form-textarea", rows = 4, placeholder = "Enter book summary" })
+            @Html.ValidationMessageFor(m => m.Summary, "", new { @class = "text-danger" })
+        </div>
 
-            <div style="margin-top: 20px;">
-                <button type="submit" class="add-btn">Update Book</button>
-                <a href="@Url.Action("Index", "AdminBooks")" class="edit-btn">Cancel</a>
-            </div>
-        }
-    </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-teal">Update Book</button>
+            <a href="@Url.Action("Index", "AdminBooks")" class="btn-cancel">Cancel</a>
+        </div>
+    }
 </div>
 
 @section Scripts {

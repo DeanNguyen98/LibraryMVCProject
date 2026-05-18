@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Library Management System</title>
     @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="~/Content/Navbar.css" />
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"] != null ? ViewContext.RouteData.Values["controller"].ToString() : "";
+        var currentAction = ViewContext.RouteData.Values["action"] != null ? ViewContext.RouteData.Values["action"].ToString() : "";
+    }
+    <nav class="navbar navbar-expand-sm navbar-dark navbar-library">
         <div class="container">
             <a class="navbar-brand" href="@(User.IsInRole("Admin") ? "/Admin/Home" : "/User/Home")">Library Management System</a>
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -19,29 +24,29 @@
                 <ul class="navbar-nav flex-grow-1">
                     @if (User.IsInRole("Admin"))
                     {
-                        <li class="nav-item"><a class="nav-link" href="/Admin/Home">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Admin/Library">Library</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Admin/Books">Books</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Admin/BorrowSettings">Borrow Settings</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Admin/Transactions">Transactions</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Admin/Feedback">Feedback</a></li>
+                        <li class="nav-item"><a class="nav-link @(currentController == "AdminHome" ? "active" : "")" href="/Admin/Home">Home</a></li>
+                        <li class="nav-item"><a class="nav-link @(currentController == "AdminLibrary" ? "active" : "")" href="/Admin/Library">Library</a></li>
+                        <li class="nav-item"><a class="nav-link @(currentController == "AdminBooks" ? "active" : "")" href="/Admin/Books">Books</a></li>
+                        <li class="nav-item"><a class="nav-link @(currentController == "AdminBorrowSettings" ? "active" : "")" href="/Admin/BorrowSettings">Borrow Settings</a></li>
+                        <li class="nav-item"><a class="nav-link @(currentController == "AdminTransactions" ? "active" : "")" href="/Admin/Transactions">Transactions</a></li>
+                        <li class="nav-item"><a class="nav-link @(currentController == "AdminFeedback" ? "active" : "")" href="/Admin/Feedback">Feedback</a></li>
                     }
                     else
                     {
-                        <li class="nav-item"><a class="nav-link" href="/User/Home">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/User/Books">Books</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/User/Transactions">My Transactions</a></li>
+                        <li class="nav-item"><a class="nav-link @(currentController == "User" && currentAction == "Index" ? "active" : "")" href="/User/Home">Home</a></li>
+                        <li class="nav-item"><a class="nav-link @(currentController == "User" && currentAction == "Books" ? "active" : "")" href="/User/Books">Books</a></li>
+                        <li class="nav-item"><a class="nav-link @(currentController == "User" && currentAction == "Transactions" ? "active" : "")" href="/User/Transactions">My Transactions</a></li>
                     }
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     @if (Request.IsAuthenticated)
                     {
-                        <li class="nav-item"><span class="nav-link">@User.Identity.Name</span></li>
+                        <li class="nav-item"><span class="nav-link nav-user">@User.Identity.Name</span></li>
                         <li class="nav-item">
                             @using (Html.BeginForm("SignOut", "Auth", FormMethod.Post))
                             {
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-link nav-link">Sign Out</button>
+                                <button type="submit" class="btn-signout">Sign Out</button>
                             }
                         </li>
                     }
