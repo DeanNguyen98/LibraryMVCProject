@@ -1,0 +1,41 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
+
+namespace LibraryManagementSystem.ViewModels.Admin
+{
+    public class BookEditViewModel
+    {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Title is required.")]
+        public string Title { get; set; }
+
+        [Required(ErrorMessage = "ISBN is required.")]
+        [MaxLength(20, ErrorMessage = "ISBN cannot exceed 20 characters.")]
+        public string Isbn { get; set; }
+
+        public string Summary { get; set; }
+
+        public string CoverImageUrl { get; set; }
+
+        [Required(ErrorMessage = "Please select a library.")]
+        public int LibraryId { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Total copies must be at least 1.")]
+        public int TotalCopies { get; set; }
+
+        [Range(0, int.MaxValue, ErrorMessage = "Available copies cannot be negative.")]
+        public int AvailableCopies { get; set; }
+
+        // Comma-separated author names
+        public string AuthorNames { get; set; }
+
+        // Comma-separated genre names
+        public string GenreNames { get; set; }
+
+        // Dropdown
+        public List<SelectListItem> LibraryOptions { get; set; }
+            = new List<SelectListItem>();
+    }
+}

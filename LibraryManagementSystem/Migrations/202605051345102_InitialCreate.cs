@@ -1,8 +1,8 @@
-﻿namespace LibraryManagementSystem.Migrations
+namespace LibraryManagementSystem.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class InitialCreate : DbMigration
     {
         public override void Up()
@@ -16,7 +16,7 @@
                         Bio = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.BookAuthors",
                 c => new
@@ -29,7 +29,7 @@
                 .ForeignKey("dbo.Books", t => t.BookId)
                 .Index(t => t.BookId)
                 .Index(t => t.AuthorId);
-            
+
             CreateTable(
                 "dbo.Books",
                 c => new
@@ -52,7 +52,7 @@
                 .Index(t => t.LibraryId)
                 .Index(t => t.Isbn, unique: true, name: "IX_Book_Isbn")
                 .Index(t => t.BorrowSettingsId);
-            
+
             CreateTable(
                 "dbo.BookGenres",
                 c => new
@@ -65,7 +65,7 @@
                 .ForeignKey("dbo.Genres", t => t.GenreId)
                 .Index(t => t.BookId)
                 .Index(t => t.GenreId);
-            
+
             CreateTable(
                 "dbo.Genres",
                 c => new
@@ -75,7 +75,7 @@
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true, name: "IX_Genre_Name");
-            
+
             CreateTable(
                 "dbo.BorrowSettings",
                 c => new
@@ -91,7 +91,7 @@
                         UpdatedAt = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.BorrowTransactions",
                 c => new
@@ -115,7 +115,7 @@
                 .Index(t => t.UserId)
                 .Index(t => t.BookId)
                 .Index(t => t.LibraryId);
-            
+
             CreateTable(
                 "dbo.Libraries",
                 c => new
@@ -130,7 +130,7 @@
                         CreatedAt = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.Users",
                 c => new
@@ -147,7 +147,7 @@
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Email, unique: true, name: "IX_User_Email");
-            
+
             CreateTable(
                 "dbo.Feedbacks",
                 c => new
@@ -164,7 +164,7 @@
                 .ForeignKey("dbo.Users", t => t.UserId)
                 .Index(t => t.UserId)
                 .Index(t => t.BookId);
-            
+
             CreateTable(
                 "dbo.Reservations",
                 c => new
@@ -181,9 +181,9 @@
                 .ForeignKey("dbo.Users", t => t.UserId)
                 .Index(t => t.UserId)
                 .Index(t => t.BookId);
-            
+
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.Reservations", "UserId", "dbo.Users");

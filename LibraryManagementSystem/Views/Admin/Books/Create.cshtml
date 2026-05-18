@@ -1,0 +1,87 @@
+﻿@model LibraryManagementSystem.ViewModels.Admin.BookCreateViewModel
+
+@{
+    ViewBag.Title = "Add New Book";
+}
+
+<div class="page-content">
+    <!-- Teal Header Banner -->
+    <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Add New Book</h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">Add a new book to the library collection.</p>
+    </div>
+
+    <div class="settings-container">
+        @using (Html.BeginForm("Create", "AdminBooks", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div style="margin-bottom: 20px;">
+                @Html.LabelFor(m => m.Title, new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                @Html.TextBoxFor(m => m.Title, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", placeholder = "Enter book title" })
+                @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                @Html.LabelFor(m => m.Isbn, new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                @Html.TextBoxFor(m => m.Isbn, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", placeholder = "Enter ISBN", maxlength = 20 })
+                @Html.ValidationMessageFor(m => m.Isbn, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                @Html.LabelFor(m => m.AuthorNames, new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                @Html.TextBoxFor(m => m.AuthorNames, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", placeholder = "Enter author names separated by commas" })
+                @Html.ValidationMessageFor(m => m.AuthorNames, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+                <small style="color: #6b7280; font-size: 13px; display: block; margin-top: 5px;">Separate multiple authors with commas (e.g., John Smith, Jane Doe)</small>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                @Html.LabelFor(m => m.GenreNames, new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                @Html.TextBoxFor(m => m.GenreNames, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", placeholder = "Enter genres separated by commas" })
+                @Html.ValidationMessageFor(m => m.GenreNames, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+                <small style="color: #6b7280; font-size: 13px; display: block; margin-top: 5px;">Separate multiple genres with commas (e.g., Fiction, Mystery)</small>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                @Html.LabelFor(m => m.LibraryId, "Library *", new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                @Html.DropDownListFor(m => m.LibraryId, Model.LibraryOptions, "-- Select Library --", new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;" })
+                @Html.ValidationMessageFor(m => m.LibraryId, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    @Html.LabelFor(m => m.TotalCopies, new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                    @Html.TextBoxFor(m => m.TotalCopies, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", type = "number", min = 1 })
+                    @Html.ValidationMessageFor(m => m.TotalCopies, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+                </div>
+
+                <div>
+                    @Html.LabelFor(m => m.AvailableCopies, new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                    @Html.TextBoxFor(m => m.AvailableCopies, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", type = "number", min = 0 })
+                    @Html.ValidationMessageFor(m => m.AvailableCopies, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                @Html.LabelFor(m => m.CoverImageUrl, new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                @Html.TextBoxFor(m => m.CoverImageUrl, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", placeholder = "Enter image URL" })
+                @Html.ValidationMessageFor(m => m.CoverImageUrl, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                @Html.LabelFor(m => m.Summary, new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                @Html.TextAreaFor(m => m.Summary, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; resize: vertical;", rows = 4, placeholder = "Enter book summary" })
+                @Html.ValidationMessageFor(m => m.Summary, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+            </div>
+
+            <div style="margin-top: 25px;">
+                <button type="submit" class="add-btn" style="text-decoration: none; display: inline-block;">Create Book</button>
+                <a href="@Url.Action("Index", "AdminBooks")" class="edit-btn" style="text-decoration: none;">Cancel</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

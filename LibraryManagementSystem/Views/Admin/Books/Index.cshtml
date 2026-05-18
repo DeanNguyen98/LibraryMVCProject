@@ -1,0 +1,71 @@
+﻿@model LibraryManagementSystem.ViewModels.Admin.ManageBooksViewModel
+
+@{
+    ViewBag.Title = "Manage Books";
+}
+
+<div class="page-content">
+    <!-- Teal Header Banner -->
+    <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Manage Books</h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">Add and manage books available in the library.</p>
+    </div>
+
+    <div class="settings-container">
+        <!-- Search and Add Button -->
+        <div class="top-actions">
+            @using (Html.BeginForm("Index", "AdminBooks", FormMethod.Get))
+            {
+                <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Search books..." class="search-box" />
+            }
+            <a href="@Url.Action("Create", "AdminBooks")" class="add-btn">+ Add New Book</a>
+        </div>
+
+        <!-- Books Table -->
+        <table class="activity-table">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Books != null && Model.Books.Any())
+                {
+                    foreach (var book in Model.Books)
+                    {
+                        <tr>
+                            <td>@book.Title</td>
+                            <td>@book.Authors</td>
+                            <td>@book.Genres</td>
+                            <td>
+                                @if (book.AvailableCopies > 0)
+                                {
+                                    <span class="status-returned">Available</span>
+                                }
+                                else
+                                {
+                                    <span class="status-overdue">Unavailable</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", "AdminBooks", new { id = book.Id })" class="edit-btn" style="background: #6b7280; text-decoration: none;">View</a>
+                                <a href="@Url.Action("Edit", "AdminBooks", new { id = book.Id })" class="edit-btn" style="text-decoration: none;">Edit</a>
+                                <a href="@Url.Action("Delete", "AdminBooks", new { id = book.Id })" class="delete-btn" style="text-decoration: none;">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #999; padding: 30px;">No books found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

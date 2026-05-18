@@ -1,0 +1,74 @@
+﻿@model LibraryManagementSystem.ViewModels.Admin.BorrowSettingCreateViewModel
+
+@{
+    ViewBag.Title = "Add Borrow Setting";
+}
+
+<div class="page-content">
+    <!-- Teal Header Banner -->
+    <div style="background: linear-gradient(135deg, #459D7A 0%, #3D8B6A 100%); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0 0 8px 0; font-size: 32px;">Add New Borrow Setting</h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.9;">Create a new borrowing rule set for the library.</p>
+    </div>
+
+    <div class="settings-container">
+        @using (Html.BeginForm("Create", "AdminBorrowSettings", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div style="margin-bottom: 20px;">
+                @Html.LabelFor(m => m.SettingName, "Setting Name *", new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                @Html.TextBoxFor(m => m.SettingName, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", placeholder = "e.g., Standard, Students, Faculty" })
+                @Html.ValidationMessageFor(m => m.SettingName, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    @Html.LabelFor(m => m.LoanDurationDays, "Loan Duration (Days) *", new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                    @Html.TextBoxFor(m => m.LoanDurationDays, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", type = "number", min = 1, max = 365 })
+                    @Html.ValidationMessageFor(m => m.LoanDurationDays, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+                </div>
+
+                <div>
+                    @Html.LabelFor(m => m.RenewalLimit, "Renewal Limit *", new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                    @Html.TextBoxFor(m => m.RenewalLimit, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", type = "number", min = 0, max = 10 })
+                    @Html.ValidationMessageFor(m => m.RenewalLimit, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    @Html.LabelFor(m => m.OverdueFinePerDay, "Overdue Fine Per Day ($) *", new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                    @Html.TextBoxFor(m => m.OverdueFinePerDay, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", type = "number", step = "0.01", min = 0, max = 100 })
+                    @Html.ValidationMessageFor(m => m.OverdueFinePerDay, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+                </div>
+
+                <div>
+                    @Html.LabelFor(m => m.MaxBorrowableItems, "Max Borrowable Items *", new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                    @Html.TextBoxFor(m => m.MaxBorrowableItems, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;", type = "number", min = 1, max = 50 })
+                    @Html.ValidationMessageFor(m => m.MaxBorrowableItems, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                @Html.LabelFor(m => m.Status, "Status *", new { style = "display: block; margin-bottom: 8px; font-weight: 600; color: #374151;" })
+                @Html.DropDownListFor(m => m.Status, new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Inactive", Value = "Inactive" },
+                    new SelectListItem { Text = "Active", Value = "Active" }
+                }, new { @class = "search-box", style = "width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;" })
+                @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger", style = "color: #ef4444; font-size: 13px; margin-top: 5px; display: block;" })
+                <small style="color: #6b7280; font-size: 13px; display: block; margin-top: 5px;">Note: Setting this to "Active" will automatically deactivate all other settings.</small>
+            </div>
+
+            <div style="margin-top: 25px;">
+                <button type="submit" class="add-btn" style="text-decoration: none; display: inline-block;">Create Setting</button>
+                <a href="@Url.Action("Index", "AdminBorrowSettings")" class="edit-btn" style="text-decoration: none;">Cancel</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
