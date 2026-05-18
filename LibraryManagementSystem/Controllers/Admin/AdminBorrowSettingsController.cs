@@ -9,7 +9,7 @@ using LibraryManagementSystem.ViewModels.Admin;
 
 namespace LibraryManagementSystem.Controllers.Admin
 {
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [RoutePrefix("Admin/BorrowSettings")]
     public class AdminBorrowSettingsController : Controller
     {
@@ -157,6 +157,13 @@ namespace LibraryManagementSystem.Controllers.Admin
 
             if (setting == null)
                 return HttpNotFound();
+
+            // Block deactivating the only active setting without replacing it
+            if (setting.Status == "Active" && vm.Status != "Active")
+            {
+                TempData["Error"] = "Cannot deactivate this setting — it is the only active setting. Activate another setting first.";
+                return RedirectToAction("Edit", new { id });
+            }
 
             // If setting this as Active, deactivate all others
             if (vm.Status == "Active")
