@@ -17,18 +17,11 @@ namespace LibraryManagementSystem.Controllers.UserArea
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
         [Route("Home")]
+        [Route("Index")]
+        [AllowAnonymous]
         public async Task<ActionResult> Index()
         {
-            var email = User.Identity.Name;
-            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
-
-            var borrowedCount = await db.BorrowTransactions.CountAsync(t => t.UserId == user.Id
-                && (t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed)
-            );
-            var availableCount = await db.Books.CountAsync(b => b.AvailableCopies > 0);
-
-            var overdueCount = await db.BorrowTransactions.CountAsync(t => t.UserId == user.Id
-                && t.Status == BorrowStatus.Overdue);
+            var isAuthenticated = Request.IsAuthenticated;
 
             var trendingList = await db.Books
                 .Include(b => b.BookAuthors.Select(ba => ba.Author))
@@ -64,26 +57,57 @@ namespace LibraryManagementSystem.Controllers.UserArea
                 });
             }
 
-            var overdueNotices = await db.BorrowTransactions
-                .Where(t => t.UserId == user.Id && t.Status == BorrowStatus.Overdue)
-                .Select(t => new UserHomeViewModel.OverdueNoticeItem
-                {
-                    BookTitle = t.Book.Title,
-                    DueDate = t.DueDate,
-                    FineAmount = t.FineAmount
-                })
+            var topBorrows = await db.BorrowTransactions
+                .GroupBy(t => t.UserId)
+                .Select(g => new { UserId = g.Key, Count = g.Count() })
+                .OrderByDescending(x => x.Count)
+                .Take(3)
                 .ToListAsync();
+
+            var topUserIds = topBorrows.Select(x => x.UserId).ToList();
+            var topUsers = await db.Users
+                .Where(u => topUserIds.Contains(u.Id))
+                .ToListAsync();
+
+            var mostActiveUsers = topBorrows
+                .Select(x => new UserHomeViewModel.MostActiveUserItem
+                {
+                    FullName = topUsers.First(u => u.Id == x.UserId).FullName,
+                    BorrowCount = x.Count
+                })
+                .ToList();
 
             var model = new UserHomeViewModel
             {
-                UserFullName = user.FullName,
-                CurrentlyBorrowedCount = borrowedCount,
-                AvailableBooksCount = availableCount,
-                OverdueBooksCount = overdueCount,
+                IsAuthenticated = isAuthenticated,
                 TrendingBooks = trending,
                 NewArrivals = newArrivals,
-                OverdueNotices = overdueNotices
+                OverdueNotices = new List<UserHomeViewModel.OverdueNoticeItem>(),
+                MostActiveUsers = mostActiveUsers
             };
+
+            if (isAuthenticated)
+            {
+                var email = User.Identity.Name;
+                var user = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+                model.UserFullName = user.FullName;
+                model.CurrentlyBorrowedCount = await db.BorrowTransactions.CountAsync(
+                    t => t.UserId == user.Id &&
+                    (t.Status == BorrowStatus.Borrowed || t.Status == BorrowStatus.Renewed));
+                model.AvailableBooksCount = await db.Books.CountAsync(b => b.AvailableCopies > 0);
+                model.OverdueBooksCount = await db.BorrowTransactions.CountAsync(
+                    t => t.UserId == user.Id && t.Status == BorrowStatus.Overdue);
+                model.OverdueNotices = await db.BorrowTransactions
+                    .Where(t => t.UserId == user.Id && t.Status == BorrowStatus.Overdue)
+                    .Select(t => new UserHomeViewModel.OverdueNoticeItem
+                    {
+                        BookTitle = t.Book.Title,
+                        DueDate = t.DueDate,
+                        FineAmount = t.FineAmount
+                    })
+                    .ToListAsync();
+            }
 
             return View("~/Views/User/Index.cshtml", model);
         }

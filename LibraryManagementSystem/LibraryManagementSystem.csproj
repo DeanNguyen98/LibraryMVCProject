@@ -127,6 +127,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Controllers\Admin\AdminBorrowSettingsController.cs" />
     <Compile Include="Controllers\Admin\AdminFeedbackController.cs" />
     <Compile Include="Controllers\Admin\AdminHomeController.cs" />
@@ -208,6 +209,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\SignIn.css" />
     <Content Include="Content\UserBookDetails.css" />
     <Content Include="Content\UserBooks.css" />
     <Content Include="Content\UserHome.css" />
