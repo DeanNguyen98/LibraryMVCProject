@@ -1,0 +1,76 @@
+@model LibraryManagementSystem.ViewModels.Admin.ManageLibraryViewModel
+
+@{
+    ViewBag.Title = "Manage Libraries";
+}
+
+<link rel="stylesheet" href="~/Content/AdminLibrary.css" />
+
+<div class="admin-page-banner">
+    <h2>Manage Libraries</h2>
+    <p>Create and manage library profiles and locations.</p>
+</div>
+
+<div class="admin-page-body">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-error">@TempData["Error"]</div>
+    }
+
+    <div class="table-toolbar">
+        @using (Html.BeginForm("Index", "AdminLibrary", FormMethod.Get))
+        {
+            <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Search libraries..." class="toolbar-search" />
+        }
+        <a href="@Url.Action("Create", "AdminLibrary")" class="btn-teal">+ Add New Library</a>
+    </div>
+
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Library Name</th>
+                    <th>Location</th>
+                    <th>Operating Hours</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Libraries != null && Model.Libraries.Any())
+                {
+                    int i = 1;
+                    foreach (var library in Model.Libraries)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td class="td-primary">@library.Name</td>
+                            <td>@library.Location</td>
+                            <td>@(string.IsNullOrEmpty(library.OperatingHours) ? "—" : library.OperatingHours)</td>
+                            <td>@(string.IsNullOrEmpty(library.ContactEmail) ? "—" : library.ContactEmail)</td>
+                            <td>
+                                <a href="@Url.Action("Details", "AdminLibrary", new { id = library.Id })" class="btn-sm-grey">View</a>
+                                <a href="@Url.Action("Edit", "AdminLibrary", new { id = library.Id })" class="btn-sm-teal">Edit</a>
+                                <a href="@Url.Action("Delete", "AdminLibrary", new { id = library.Id })" class="btn-sm-danger">Delete</a>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="td-empty">No libraries found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>

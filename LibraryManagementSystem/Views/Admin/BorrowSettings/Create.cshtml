@@ -1,0 +1,71 @@
+@model LibraryManagementSystem.ViewModels.Admin.BorrowSettingCreateViewModel
+
+@{
+    ViewBag.Title = "Add Borrow Setting";
+}
+
+<link rel="stylesheet" href="~/Content/AdminForm.css" />
+
+<div class="admin-page-banner">
+    <h2>Add New Borrow Setting</h2>
+    <p>Create a new borrowing rule set for the library.</p>
+</div>
+
+<div class="admin-form-card">
+    @using (Html.BeginForm("Create", "AdminBorrowSettings", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label class="form-label">Setting Name *</label>
+            @Html.TextBoxFor(m => m.SettingName, new { @class = "form-input", placeholder = "e.g., Standard, Students, Faculty" })
+            @Html.ValidationMessageFor(m => m.SettingName, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label class="form-label">Loan Duration (Days) *</label>
+                @Html.TextBoxFor(m => m.LoanDurationDays, new { @class = "form-input", type = "number", min = 1, max = 365 })
+                @Html.ValidationMessageFor(m => m.LoanDurationDays, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label class="form-label">Renewal Limit *</label>
+                @Html.TextBoxFor(m => m.RenewalLimit, new { @class = "form-input", type = "number", min = 0, max = 10 })
+                @Html.ValidationMessageFor(m => m.RenewalLimit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label class="form-label">Overdue Fine Per Day ($) *</label>
+                @Html.TextBoxFor(m => m.OverdueFinePerDay, new { @class = "form-input", type = "number", step = "0.01", min = 0, max = 100 })
+                @Html.ValidationMessageFor(m => m.OverdueFinePerDay, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label class="form-label">Max Borrowable Items *</label>
+                @Html.TextBoxFor(m => m.MaxBorrowableItems, new { @class = "form-input", type = "number", min = 1, max = 50 })
+                @Html.ValidationMessageFor(m => m.MaxBorrowableItems, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Status *</label>
+            @Html.DropDownListFor(m => m.Status, new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Inactive", Value = "Inactive" },
+                new SelectListItem { Text = "Active", Value = "Active" }
+            }, new { @class = "form-select" })
+            @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+            <span class="form-hint">Setting this to "Active" will automatically deactivate all other settings.</span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-teal">Create Setting</button>
+            <a href="@Url.Action("Index", "AdminBorrowSettings")" class="btn-cancel">Cancel</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

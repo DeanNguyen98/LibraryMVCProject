@@ -7,6 +7,7 @@ namespace LibraryManagementSystem.ViewModels.User
 {
     public class UserHomeViewModel
     {
+        public bool IsAuthenticated { get; set; }
         public string UserFullName { get; set; }
         public int CurrentlyBorrowedCount { get; set; }
         public int AvailableBooksCount { get; set; }
@@ -14,6 +15,7 @@ namespace LibraryManagementSystem.ViewModels.User
         public List<TrendingBookItem> TrendingBooks { get; set; }
         public List<NewArrivalItem> NewArrivals { get; set; }
         public List<OverdueNoticeItem> OverdueNotices { get; set; }
+        public List<MostActiveUserItem> MostActiveUsers { get; set; }
 
         public class TrendingBookItem
         {
@@ -34,6 +36,12 @@ namespace LibraryManagementSystem.ViewModels.User
             public string BookTitle { get; set; }
             public DateTime DueDate { get; set; }
             public decimal FineAmount { get; set; }
+        }
+
+        public class MostActiveUserItem
+        {
+            public string FullName { get; set; }
+            public int BorrowCount { get; set; }
         }
     }
 }

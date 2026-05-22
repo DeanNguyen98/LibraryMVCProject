@@ -1,0 +1,468 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.BorrowTransaction>
+
+@{
+    ViewBag.Title = "Manage Transactions";
+    var reservations = ViewBag.Reservations as IEnumerable<LibraryManagementSystem.Models.Reservation>;
+}
+
+<!-- Teal Header Banner -->
+<div class="admin-page-banner">
+    <h2>Manage Transactions</h2>
+    <p>View and manage borrowing, reservations and fines</p>
+</div>
+
+<div class="admin-page-body">
+
+    <!-- Tabs -->
+    <div class="admin-tab-row">
+        <button class="admin-tab-btn active" onclick="showTab('borrowed', this)">Active Borrowed</button>
+        <button class="admin-tab-btn" onclick="showTab('returned', this)">Returned</button>
+        <button class="admin-tab-btn" onclick="showTab('reservations', this)">Reservations</button>
+        <button class="admin-tab-btn" onclick="showTab('fines', this)">Fines</button>
+    </div>
+
+    <!-- Borrowed Tab -->
+    <div id="borrowed" class="admin-tab-content">
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member Name</th>
+                        <th>Book Title</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 1; }
+                    @foreach (var transaction in Model.Where(t => t.Status != LibraryManagementSystem.Models.BorrowStatus.Returned))
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@transaction.User.FullName</td>
+                            <td class="td-book">@transaction.Book.Title</td>
+                            <td>@transaction.BorrowedAt.ToString("dd MMM yyyy")</td>
+                            <td>@transaction.DueDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                @if (transaction.Status == LibraryManagementSystem.Models.BorrowStatus.Borrowed)
+                                {
+                                    <span class="badge-borrowed">Borrowed</span>
+                                }
+                                else if (transaction.Status == LibraryManagementSystem.Models.BorrowStatus.Overdue)
+                                {
+                                    <span class="badge-overdue">Overdue</span>
+                                }
+                                else if (transaction.Status == LibraryManagementSystem.Models.BorrowStatus.Returned)
+                                {
+                                    <span class="badge-returned">Returned</span>
+                                }
+                            </td>
+                            <td>
+                                @if (transaction.Status != LibraryManagementSystem.Models.BorrowStatus.Returned)
+                                {
+                                    using (Html.BeginForm("ConfirmReturn", "AdminTransactions", new { id = transaction.Id }, FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-teal"
+                                                onclick="return confirm('Confirm return of this book?')">
+                                            Confirm Return
+                                        </button>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Returned Tab -->
+    <div id="returned" class="admin-tab-content" style="display:none;">
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member Name</th>
+                        <th>Book Title</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Returned On</th>
+                        <th>Fine Paid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int r = 1; }
+                    @foreach (var transaction in Model.Where(t => t.Status == LibraryManagementSystem.Models.BorrowStatus.Returned))
+                    {
+                        <tr>
+                            <td>@r</td>
+                            <td>@transaction.User.FullName</td>
+                            <td class="td-book">@transaction.Book.Title</td>
+                            <td>@transaction.BorrowedAt.ToString("dd MMM yyyy")</td>
+                            <td>@transaction.DueDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                @if (transaction.ReturnedAt.HasValue)
+                                {
+                                    if (transaction.ReturnedAt.Value <= transaction.DueDate)
+                                    {
+                                        <span class="badge-returned">@transaction.ReturnedAt.Value.ToString("dd MMM yyyy")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-overdue">@transaction.ReturnedAt.Value.ToString("dd MMM yyyy") (Late)</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td>
+                                @if (transaction.FinePaid > 0)
+                                {
+                                    <span class="fine-text">$@transaction.FinePaid.ToString("0.00")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                        </tr>
+                        r++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Reservations Tab -->
+    <div id="reservations" class="admin-tab-content" style="display:none;">
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member Name</th>
+                        <th>Book Title</th>
+                        <th>Reserved At</th>
+                        <th>Expires At</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int j = 1; }
+                    @if (reservations != null)
+                    {
+                        foreach (var reservation in reservations)
+                        {
+                            <tr>
+                                <td>@j</td>
+                                <td>@reservation.User.FullName</td>
+                                <td class="td-book">@reservation.Book.Title</td>
+                                <td>@reservation.ReservedAt.ToString("dd MMM yyyy")</td>
+                                <td>@reservation.ExpiresAt.ToString("dd MMM yyyy")</td>
+                                <td>
+                                    @if (reservation.Status == LibraryManagementSystem.Models.ReservationStatus.Pending)
+                                    {
+                                        <span class="badge-borrowed">Pending</span>
+                                    }
+                                    else if (reservation.Status == LibraryManagementSystem.Models.ReservationStatus.Fulfilled)
+                                    {
+                                        <span class="badge-returned">Fulfilled</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-overdue">Cancelled</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (reservation.Status == LibraryManagementSystem.Models.ReservationStatus.Pending)
+                                    {
+                                        using (Html.BeginForm("CancelReservation", "AdminTransactions", new { id = reservation.Id }, FormMethod.Post))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn-danger-outline"
+                                                    onclick="return confirm('Cancel this reservation?')">
+                                                Cancel
+                                            </button>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                            </tr>
+                            j++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Fines Tab -->
+    <div id="fines" class="admin-tab-content" style="display:none;">
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member Name</th>
+                        <th>Book Title</th>
+                        <th>Due Date</th>
+                        <th>Fine Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int k = 1; }
+                    @foreach (var transaction in Model.Where(t => t.FineAmount > 0))
+                    {
+                        <tr>
+                            <td>@k</td>
+                            <td>@transaction.User.FullName</td>
+                            <td class="td-book">@transaction.Book.Title</td>
+                            <td>@transaction.DueDate.ToString("dd MMM yyyy")</td>
+                            <td><span class="fine-text">$@transaction.FineAmount.ToString("0.00")</span></td>
+                            <td>
+                                @if (transaction.FinePaid >= transaction.FineAmount)
+                                {
+                                    <span class="badge-returned">Paid</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-overdue">Unpaid</span>
+                                }
+                            </td>
+                            <td>
+                                @if (transaction.FinePaid < transaction.FineAmount)
+                                {
+                                    using (Html.BeginForm("MarkFinePaid", "AdminTransactions", new { id = transaction.Id }, FormMethod.Post))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-teal"
+                                                onclick="return confirm('Mark this fine as paid?')">
+                                            Mark as Paid
+                                        </button>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                        </tr>
+                        k++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    /* Banner */
+    .admin-page-banner {
+        background: #2e8b7a;
+        color: #fff;
+        padding: 28px 32px;
+        border-radius: 8px;
+        margin-bottom: 28px;
+    }
+
+        .admin-page-banner h2 {
+            margin: 0 0 4px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .admin-page-banner p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.88;
+        }
+
+    .admin-page-body {
+        padding-bottom: 40px;
+    }
+
+    /* Tabs */
+    .admin-tab-row {
+        display: flex;
+        gap: 0;
+        margin-bottom: 0;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .admin-tab-btn {
+        background: none;
+        border: none;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #888;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        transition: all 0.15s;
+    }
+
+        .admin-tab-btn:hover {
+            color: #2e8b7a;
+        }
+
+        .admin-tab-btn.active {
+            color: #2e8b7a;
+            border-bottom: 3px solid #2e8b7a;
+        }
+
+    /* Table */
+    .admin-tab-content {
+        padding-top: 20px;
+    }
+
+    .admin-table-wrap {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+        overflow: hidden;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin: 0;
+    }
+
+        .admin-table thead tr {
+            background: #f5f5f5;
+        }
+
+        .admin-table thead th {
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            vertical-align: middle;
+        }
+
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tbody tr:hover {
+            background: #f9fffe;
+        }
+
+    .td-book {
+        font-weight: 600;
+        color: #2e8b7a;
+    }
+
+    /* Badges */
+    .badge-borrowed {
+        background: #fff3cd;
+        color: #856404;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-returned {
+        background: #d1f2eb;
+        color: #1a7a5e;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-overdue {
+        background: #fde8e8;
+        color: #c0392b;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Buttons */
+    .btn-teal {
+        background: #2e8b7a;
+        color: #fff;
+        border: none;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+        .btn-teal:hover {
+            background: #246b5e;
+        }
+
+    .btn-danger-outline {
+        background: #fff;
+        color: #e74c3c;
+        border: 1px solid #e74c3c;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+        .btn-danger-outline:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+    .fine-text {
+        color: #e74c3c;
+        font-weight: 700;
+    }
+
+    .text-muted {
+        color: #bbb;
+    }
+</style>
+
+<script>
+    function showTab(tabName, el) {
+        document.querySelectorAll('.admin-tab-content').forEach(function (tab) {
+            tab.style.display = 'none';
+        });
+        document.querySelectorAll('.admin-tab-btn').forEach(function (btn) {
+            btn.classList.remove('active');
+        });
+        document.getElementById(tabName).style.display = 'block';
+        el.classList.add('active');
+    }
+</script>

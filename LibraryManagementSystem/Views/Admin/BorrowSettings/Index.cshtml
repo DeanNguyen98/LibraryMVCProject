@@ -1,0 +1,85 @@
+@model LibraryManagementSystem.ViewModels.Admin.ManageBorrowSettingsViewModel
+
+@{
+    ViewBag.Title = "Manage Borrow Settings";
+}
+
+<link rel="stylesheet" href="~/Content/AdminBorrowSettings.css" />
+
+<div class="admin-page-banner">
+    <h2>Manage Borrow Settings</h2>
+    <p>Configure borrowing parameters such as loan duration, renewal limits, and fines.</p>
+</div>
+
+<div class="admin-page-body">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-error">@TempData["Error"]</div>
+    }
+
+    <div class="table-toolbar">
+        <a href="@Url.Action("Create", "AdminBorrowSettings")" class="btn-teal">+ Add New Setting</a>
+    </div>
+
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Setting Name</th>
+                    <th>Loan Duration</th>
+                    <th>Renewal Limit</th>
+                    <th>Fine / Day</th>
+                    <th>Max Items</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Settings != null && Model.Settings.Any())
+                {
+                    int i = 1;
+                    foreach (var setting in Model.Settings)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td class="td-primary">@setting.SettingName</td>
+                            <td>@setting.LoanDurationDays days</td>
+                            <td>@setting.RenewalLimit</td>
+                            <td>$@setting.OverdueFinePerDay.ToString("0.00")</td>
+                            <td>@setting.MaxBorrowableItems</td>
+                            <td>
+                                @if (setting.Status == "Active")
+                                {
+                                    <span class="badge-active">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-inactive">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", "AdminBorrowSettings", new { id = setting.Id })" class="btn-sm-grey">View</a>
+                                <a href="@Url.Action("Edit", "AdminBorrowSettings", new { id = setting.Id })" class="btn-sm-teal">Edit</a>
+                                <a href="@Url.Action("Delete", "AdminBorrowSettings", new { id = setting.Id })" class="btn-sm-danger">Delete</a>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="td-empty">No borrow settings found. Create one to get started.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>

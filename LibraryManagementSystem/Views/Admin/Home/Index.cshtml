@@ -1,7 +1,383 @@
 @model LibraryManagementSystem.ViewModels.Admin.AdminHomeViewModel
-
 @{
     ViewBag.Title = "Admin Home";
 }
 
-<h2>@Model.WelcomeMessage</h2>
+<!-- Teal Banner -->
+<div class="admin-page-banner">
+    <h2>@Model.WelcomeMessage</h2>
+    <p>Manage your library system efficiently</p>
+</div>
+
+<div class="admin-page-body">
+
+    <!-- Stat Cards Row 1 -->
+    <div class="home-stats-grid">
+        <div class="home-stat-card">
+            <div class="home-stat-icon icon-teal">&#128218;</div>
+            <div class="home-stat-info">
+                <span class="home-stat-number">@Model.TotalBooks</span>
+                <span class="home-stat-label">Total Books</span>
+                <span class="home-stat-sub">All books in library</span>
+            </div>
+        </div>
+
+        <div class="home-stat-card">
+            <div class="home-stat-icon icon-blue">&#128196;</div>
+            <div class="home-stat-info">
+                <span class="home-stat-number">@Model.BorrowedBooks</span>
+                <span class="home-stat-label">Borrowed Books</span>
+                <span class="home-stat-sub">Currently borrowed</span>
+            </div>
+        </div>
+
+        <div class="home-stat-card">
+            <div class="home-stat-icon icon-red">&#9888;</div>
+            <div class="home-stat-info">
+                <span class="home-stat-number">@Model.OverdueBooks</span>
+                <span class="home-stat-label">Overdue Books</span>
+                <span class="home-stat-sub">Need attention</span>
+            </div>
+        </div>
+
+        <div class="home-stat-card">
+            <div class="home-stat-icon icon-purple">&#128101;</div>
+            <div class="home-stat-info">
+                <span class="home-stat-number">@Model.TotalMembers</span>
+                <span class="home-stat-label">Total Members</span>
+                <span class="home-stat-sub">Registered members</span>
+            </div>
+        </div>
+
+        <div class="home-stat-card">
+            <div class="home-stat-icon icon-orange">&#128203;</div>
+            <div class="home-stat-info">
+                <span class="home-stat-number">@Model.PendingReservations</span>
+                <span class="home-stat-label">Pending Reservations</span>
+                <span class="home-stat-sub">Awaiting fulfilment</span>
+            </div>
+        </div>
+
+        <div class="home-stat-card">
+            <div class="home-stat-icon icon-yellow">&#11088;</div>
+            <div class="home-stat-info">
+                <span class="home-stat-number">@Model.TotalFeedback</span>
+                <span class="home-stat-label">Total Feedback</span>
+                <span class="home-stat-sub">Member reviews</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <h3 class="section-title">Quick Actions</h3>
+    <div class="home-action-grid">
+        <a href="/Admin/Books/Create" class="home-action-card">
+            <span class="action-icon">&#10133;</span>
+            <span>Add Book</span>
+        </a>
+        <a href="/Admin/Books" class="home-action-card">
+            <span class="action-icon">&#128218;</span>
+            <span>Manage Books</span>
+        </a>
+        <a href="/Admin/Transactions" class="home-action-card">
+            <span class="action-icon">&#128196;</span>
+            <span>View Transactions</span>
+        </a>
+        <a href="/Admin/Feedback" class="home-action-card">
+            <span class="action-icon">&#11088;</span>
+            <span>View Feedback</span>
+        </a>
+    </div>
+
+    <!-- Recent Activity -->
+    <h3 class="section-title">Recent Activity</h3>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Activity</th>
+                    <th>Member</th>
+                    <th>Details</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.RecentActivity == null || !Model.RecentActivity.Any())
+                {
+                    <tr>
+                        <td colspan="4" style="text-align:center; color:#aaa; padding:30px;">
+                            No recent activity found.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model.RecentActivity)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.Activity == "Book Borrowed")
+                                {
+                                    <span class="badge-borrowed">Borrowed</span>
+                                }
+                                else if (item.Activity == "Book Returned")
+                                {
+                                    <span class="badge-returned">Returned</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-overdue">Overdue</span>
+                                }
+                            </td>
+                            <td>@item.UserName</td>
+                            <td class="td-book">@item.Details</td>
+                            <td style="color:#aaa; font-size:13px;">@item.TimeAgo</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<style>
+    /* Banner */
+    .admin-page-banner {
+        background: #2e8b7a;
+        color: #fff;
+        padding: 28px 32px;
+        border-radius: 8px;
+        margin-bottom: 28px;
+    }
+
+        .admin-page-banner h2 {
+            margin: 0 0 4px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .admin-page-banner p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.88;
+        }
+
+    .admin-page-body {
+        padding-bottom: 40px;
+    }
+
+    /* Stat Cards */
+    .home-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .home-stat-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+        border: 1px solid #f0f0f0;
+    }
+
+    .home-stat-icon {
+        font-size: 28px;
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .icon-teal {
+        background: #e8f5f2;
+    }
+
+    .icon-blue {
+        background: #e8f0ff;
+    }
+
+    .icon-red {
+        background: #fde8e8;
+    }
+
+    .icon-purple {
+        background: #f0e8ff;
+    }
+
+    .icon-orange {
+        background: #fff3e8;
+    }
+
+    .icon-yellow {
+        background: #fffbe8;
+    }
+
+    .home-stat-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .home-stat-number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2e8b7a;
+        line-height: 1;
+    }
+
+    .home-stat-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin-top: 4px;
+    }
+
+    .home-stat-sub {
+        font-size: 12px;
+        color: #aaa;
+        margin-top: 2px;
+    }
+
+    /* Section titles */
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0 0 16px;
+    }
+
+    /* Quick Actions */
+    .home-action-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .home-action-card {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        transition: all 0.15s;
+    }
+
+        .home-action-card:hover {
+            background: #e8f5f2;
+            border-color: #2e8b7a;
+            color: #2e8b7a;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+    .action-icon {
+        font-size: 24px;
+    }
+
+    /* Table */
+    .admin-table-wrap {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+        overflow: hidden;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin: 0;
+    }
+
+        .admin-table thead tr {
+            background: #f5f5f5;
+        }
+
+        .admin-table thead th {
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            vertical-align: middle;
+        }
+
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tbody tr:hover {
+            background: #f9fffe;
+        }
+
+    .td-book {
+        font-weight: 600;
+        color: #2e8b7a;
+    }
+
+    /* Badges */
+    .badge-borrowed {
+        background: #fff3cd;
+        color: #856404;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-returned {
+        background: #d1f2eb;
+        color: #1a7a5e;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-overdue {
+        background: #fde8e8;
+        color: #c0392b;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .home-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .home-action-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>

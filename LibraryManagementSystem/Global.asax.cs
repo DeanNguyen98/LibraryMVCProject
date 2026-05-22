@@ -7,6 +7,9 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
+using LibraryManagementSystem.Data;
+using LibraryManagementSystem.Helpers;
+using LibraryManagementSystem.Models;
 
 namespace LibraryManagementSystem
 {
@@ -18,6 +21,29 @@ namespace LibraryManagementSystem
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            SeedAdminUser();
+        }
+
+        private void SeedAdminUser()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                // skip if an admin already exists
+                if (db.Users.Any(u => u.Role == UserRole.Admin))
+                    return;
+
+                db.Users.Add(new User
+                {
+                    FullName = "Admin",
+                    Email = "admin@library.com",
+                    PasswordHash = PasswordHelper.HashPassword("Admin@123"),
+                    Role = UserRole.Admin,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                });
+
+                db.SaveChanges();
+            }
         }
 
         protected void Application_PostAuthenticateRequest(object sender, EventArgs e)

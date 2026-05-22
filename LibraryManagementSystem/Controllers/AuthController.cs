@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using LibraryManagementSystem.Data;
+using LibraryManagementSystem.Helpers;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.ViewModels.Auth;
 
@@ -20,7 +21,7 @@ namespace LibraryManagementSystem.Controllers
         public ActionResult Root()
         {
             if (!Request.IsAuthenticated)
-                return Redirect("/Auth/SignIn");
+                return Redirect("/User/Home");
 
             if (User.IsInRole("Admin"))
                 return Redirect("/Admin/Home");
@@ -49,7 +50,7 @@ namespace LibraryManagementSystem.Controllers
 
             var user = await db.Users.FirstOrDefaultAsync(u => u.Email == model.Email && u.Role == UserRole.Member);
 
-            if (user == null || user.PasswordHash != model.Password)
+            if (user == null || !PasswordHelper.VerifyPassword(model.Password, user.PasswordHash))
             {
                 TempData["SignInError"] = "Invalid email or password.";
                 return RedirectToAction("SignIn");
@@ -88,7 +89,7 @@ namespace LibraryManagementSystem.Controllers
             {
                 FullName = model.FullName,
                 Email = model.Email,
-                PasswordHash = model.Password,
+                PasswordHash = PasswordHelper.HashPassword(model.Password),
                 Phone = model.Phone,
                 Address = model.Address,
                 Role = UserRole.Member
@@ -98,7 +99,7 @@ namespace LibraryManagementSystem.Controllers
             await db.SaveChangesAsync();
 
             SetAuthCookie(user);
-            return Redirect("/Admin/Home");
+            return Redirect("/User/Home");
         }
 
         [Route("AdminSignIn")]
@@ -121,7 +122,7 @@ namespace LibraryManagementSystem.Controllers
 
             var user = await db.Users.FirstOrDefaultAsync(u => u.Email == model.Email && u.Role == UserRole.Admin);
 
-            if (user == null || user.PasswordHash != model.Password)
+            if (user == null || !PasswordHelper.VerifyPassword(model.Password, user.PasswordHash))
             {
                 TempData["AdminSignInError"] = "Invalid email or password.";
                 return RedirectToAction("AdminSignIn");

@@ -4,127 +4,182 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/Content/UserHome.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/UserHome.css?v=6" />
 
-<div class="user-home">
+<div class="uh-page">
 
-    <div class="welcome-banner">
-        <h2>Welcome, @Model.UserFullName</h2>
-        <p>Manage your books and borrowing activities</p>
-    </div>
-
-    <h3 class="section-heading">Group Members</h3>
-    <table class="members-table">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Full Name</th>
-                <th>Student ID</th>
-                <th>Role</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>Md Akash Hasan</td>
-                <td>20031669</td>
-                <td>Frontend User Pages</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Member Two</td>
-                <td>2003XXXX</td>
-                <td>Frontend Admin Pages</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Member Three</td>
-                <td>2003XXXX</td>
-                <td>Backend</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>Member Four</td>
-                <td>2003XXXX</td>
-                <td>Database</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="stats-row">
-        <div class="info-card card-blue">
-            <p class="card-label">Currently Borrowed</p>
-            <h3 class="card-number">@Model.CurrentlyBorrowedCount</h3>
-            <p class="card-note">Books checked out</p>
+    <div class="uh-section">
+        <div class="uh-section-header">
+            <h3>Group Members</h3>
         </div>
-        <div class="info-card card-green">
-            <p class="card-label">Available Books</p>
-            <h3 class="card-number">@Model.AvailableBooksCount</h3>
-            <p class="card-note">Ready to borrow</p>
-        </div>
-        <div class="info-card card-red">
-            <p class="card-label">Overdue Books</p>
-            <h3 class="card-number">@Model.OverdueBooksCount</h3>
-            <p class="card-note">Requires attention</p>
+        <div class="uh-members-table-wrap">
+            <table class="uh-members-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Full Name</th>
+                        <th>Student ID</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Cong Tuan Nguyen</td>
+                        <td>20033120</td>
+                        <td>Group Leader, Lead Developer</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Md Akash Hasan</td>
+                        <td>20031669</td>
+                        <td>Developer (User Side)</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Jon Rhandel Zaraspe</td>
+                        <td>20034942</td>
+                        <td>Developer (Admin Side)</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Pratik Prasai</td>
+                        <td>20033482</td>
+                        <td>Developer (Admin Side)</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="section-top">
-        <h3>Trending Books</h3>
-        <a href="/User/Books">View All</a>
-    </div>
-
-    <div class="book-row">
-        @foreach (var book in Model.TrendingBooks)
-        {
-            <div class="book-box">
-                <p class="book-name">@book.Title</p>
-                <p class="book-writer">@book.Authors</p>
-                @if (book.IsAvailable)
-                {
-                    <span class="tag tag-green">Available</span>
-                }
-                else
-                {
-                    <span class="tag tag-yellow">Borrowed</span>
-                }
-            </div>
-        }
-    </div>
-
-    <div class="section-top">
-        <h3>New Arrivals</h3>
-        <a href="/User/Books">View All</a>
-    </div>
-
-    <div class="book-row">
-        @foreach (var book in Model.NewArrivals)
-        {
-            <div class="book-box">
-                <p class="book-name">@book.Title</p>
-                <p class="book-writer">@book.Authors</p>
-                @if (book.IsAvailable)
-                {
-                    <span class="tag tag-green">Available</span>
-                }
-                else
-                {
-                    <span class="tag tag-yellow">Borrowed</span>
-                }
-            </div>
-        }
-    </div>
-
-    @if (Model.OverdueNotices.Count > 0)
+    @if (!Model.IsAuthenticated)
     {
+        <div class="uh-guest-banner">
+            Please <a href="/Auth/SignIn">sign in</a> to borrow or reserve books.
+        </div>
+    }
+
+    <div class="uh-hero">
+        @if (Model.IsAuthenticated)
+        {
+            <p class="uh-hero-greeting">Welcome back</p>
+            <h1 class="uh-hero-name">@Model.UserFullName</h1>
+            <p class="uh-hero-sub">Explore your library, track your reads, and stay on top of due dates.</p>
+        }
+        else
+        {
+            <p class="uh-hero-greeting">Welcome to</p>
+            <h1 class="uh-hero-name">Library Management System</h1>
+            <p class="uh-hero-sub">Discover trending books and new arrivals from our collection.</p>
+        }
+    </div>
+
+    @if (Model.IsAuthenticated)
+    {
+        <div class="uh-stats">
+            <div class="uh-stat-card uh-stat-teal">
+                <p class="uh-stat-label">Currently Borrowed</p>
+                <div class="uh-stat-value">@Model.CurrentlyBorrowedCount</div>
+                <p class="uh-stat-note">Books checked out</p>
+            </div>
+            <div class="uh-stat-card uh-stat-green">
+                <p class="uh-stat-label">Available Books</p>
+                <div class="uh-stat-value">@Model.AvailableBooksCount</div>
+                <p class="uh-stat-note">Ready to borrow</p>
+            </div>
+            <div class="uh-stat-card uh-stat-red">
+                <p class="uh-stat-label">Overdue Books</p>
+                <div class="uh-stat-value">@Model.OverdueBooksCount</div>
+                <p class="uh-stat-note">Requires attention</p>
+            </div>
+        </div>
+
         foreach (var notice in Model.OverdueNotices)
         {
-            <div class="warning-box">
-                <strong>Overdue Notice:</strong>
-                @notice.BookTitle was due @notice.DueDate.ToString("d MMM yyyy"). Fine:
-                $@notice.FineAmount.ToString("0.00")
+            <div class="uh-overdue-alert">
+                <strong>Overdue:</strong> @notice.BookTitle was due @notice.DueDate.ToString("d MMM yyyy") &mdash; Fine: $@notice.FineAmount.ToString("0.00")
             </div>
         }
     }
+
+    <div class="uh-section">
+        <div class="uh-section-header">
+            <h3>Trending Now</h3>
+            @if (Model.IsAuthenticated)
+            {
+                <a href="/User/Books">View All &rarr;</a>
+            }
+        </div>
+        <div class="uh-trending-list">
+            @for (int i = 0; i < Model.TrendingBooks.Count; i++)
+            {
+                var book = Model.TrendingBooks[i];
+                <div class="uh-trending-item">
+                    <div class="uh-trending-rank">@(i + 1)</div>
+                    <div class="uh-trending-info">
+                        <p class="uh-trending-title">@book.Title</p>
+                        <p class="uh-trending-author">@book.Authors</p>
+                    </div>
+                    @if (book.IsAvailable)
+                    {
+                        <span class="uh-tag uh-tag-available">Available</span>
+                    }
+                    else
+                    {
+                        <span class="uh-tag uh-tag-borrowed">Borrowed</span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="uh-section">
+        <div class="uh-section-header">
+            <h3>New Arrivals</h3>
+            @if (Model.IsAuthenticated)
+            {
+                <a href="/User/Books">View All &rarr;</a>
+            }
+        </div>
+        <div class="uh-book-grid">
+            @foreach (var book in Model.NewArrivals)
+            {
+                <div class="uh-book-card">
+                    <p class="uh-book-title">@book.Title</p>
+                    <p class="uh-book-author">@book.Authors</p>
+                    @if (book.IsAvailable)
+                    {
+                        <span class="uh-tag uh-tag-available">Available</span>
+                    }
+                    else
+                    {
+                        <span class="uh-tag uh-tag-borrowed">Borrowed</span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="uh-section">
+        <div class="uh-section-header">
+            <h3>Most Active Members</h3>
+        </div>
+        <div class="uh-trending-list">
+            @for (int i = 0; i < Model.MostActiveUsers.Count; i++)
+            {
+                var member = Model.MostActiveUsers[i];
+                <div class="uh-trending-item">
+                    <div class="uh-trending-rank">@(i + 1)</div>
+                    <div class="uh-trending-info">
+                        <p class="uh-trending-title">@member.FullName</p>
+                        <p class="uh-trending-author">@member.BorrowCount borrow@(member.BorrowCount == 1 ? "" : "s")</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 
 </div>

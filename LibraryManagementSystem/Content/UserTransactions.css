@@ -1,25 +1,27 @@
 .transactions-page {
-    padding: 20px;
-    background-color: #f5f5f5;
-    font-family: Arial, sans-serif;
+    padding: 28px 0 48px;
+    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
 }
 
 .page-header {
     background-color: #2a8f7e;
     color: #ffffff;
-    padding: 18px 22px;
-    border-radius: 6px;
-    margin-bottom: 18px;
+    padding: 34px 40px;
+    border-radius: 14px;
+    margin-bottom: 24px;
 }
 
     .page-header h2 {
-        margin: 0 0 4px 0;
-        font-size: 20px;
+        margin: 0 0 6px 0;
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 1.15;
     }
 
     .page-header p {
         margin: 0;
-        font-size: 13px;
+        font-size: 14px;
+        color: rgba(255,255,255,0.9);
     }
 
 .tab-buttons {
@@ -35,6 +37,7 @@
 .tab-btn {
     padding: 8px 18px;
     font-size: 12px;
+    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
     cursor: pointer;
     background-color: #ffffff;
     border: none;
@@ -58,6 +61,7 @@
     border-collapse: collapse;
     background-color: #ffffff;
     font-size: 13px;
+    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
     border-radius: 6px;
     overflow: hidden;
 }

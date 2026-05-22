@@ -1,0 +1,73 @@
+﻿@model LibraryManagementSystem.ViewModels.Admin.LibraryDetailsViewModel
+@{
+    ViewBag.Title = "Library Details";
+}
+
+<div class="page-content">
+
+    <div class="settings-container">
+
+        <div class="page-header">
+            <h1>Library Details</h1>
+
+            <p class="subtitle">
+                View detailed information about the library.
+            </p>
+        </div>
+
+        <table class="activity-table">
+
+            <tbody>
+
+                <tr>
+                    <th>Library Name</th>
+                    <td>@Model.Name</td>
+                </tr>
+
+                <tr>
+                    <th>Location</th>
+                    <td>@Model.Location</td>
+                </tr>
+
+                <tr>
+                    <th>Operating Hours</th>
+                    <td>@(string.IsNullOrEmpty(Model.OperatingHours) ? "—" : Model.OperatingHours)</td>
+                </tr>
+
+                <tr>
+                    <th>Contact Email</th>
+                    <td>@(string.IsNullOrEmpty(Model.ContactEmail) ? "—" : Model.ContactEmail)</td>
+                </tr>
+
+                <tr>
+                    <th>Contact Phone</th>
+                    <td>@(string.IsNullOrEmpty(Model.ContactPhone) ? "—" : Model.ContactPhone)</td>
+                </tr>
+
+                <tr>
+                    <th>Total Books</th>
+                    <td>@Model.TotalBooks</td>
+                </tr>
+
+                <tr>
+                    <th>Created Date</th>
+                    <td>@Model.CreatedAt.ToString("dd MMM yyyy")</td>
+                </tr>
+
+                <tr>
+                    <th>Description</th>
+                    <td>@(string.IsNullOrEmpty(Model.Description) ? "No description available" : Model.Description)</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+        <div style="margin-top: 20px;">
+            <a href="@Url.Action("Edit", "AdminLibrary", new { id = Model.Id })" class="edit-btn">Edit</a>
+            <a href="@Url.Action("Index", "AdminLibrary")" class="add-btn">Back to List</a>
+        </div>
+
+    </div>
+
+</div>
